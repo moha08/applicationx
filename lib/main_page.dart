@@ -1,16 +1,7 @@
 import 'package:flutter/material.dart';
-import './login.dart';
-import 'package:firebase_core/firebase_core.dart';
 
-// Run application
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  runApp(ProjectxApp());
-}
-
-// main Page
-class ProjectxApp extends StatelessWidget {
+// Run application/ main Page
+class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -23,7 +14,7 @@ class ProjectxApp extends StatelessWidget {
         ),
         body: Container(
           //    child: CreateProfile(),
-          child: Login(),
+          child: Text("Welcome on ProjectX"),
         ),
       ),
     );
