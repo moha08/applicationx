@@ -23,6 +23,37 @@ class _CreateProfileState extends State<CreateProfile> {
     super.dispose();
   }
 
+  // create user and authentication on firebase
+
+  void createUserAndAuthenticaton() async {
+    UserCredential userCredential = await FirebaseAuth.instance
+        .createUserWithEmailAndPassword(
+            email: emailController.text, password: passwordController.text)
+        .catchError((err) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Error"),
+              content: Text(err.message),
+              actions: [
+                FlatButton(
+                  child: Text("Ok"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            );
+          });
+    });
+    UserProfile(
+      fullName: fullNameController.text,
+      email: emailController.text,
+      password: passwordController.text,
+    ).addUser();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -93,27 +124,7 @@ class _CreateProfileState extends State<CreateProfile> {
                 maxSize: 50,
               ),
               OutlineButton(
-                onPressed: () async {
-                  try {
-                    UserCredential userCredential = await FirebaseAuth.instance
-                        .createUserWithEmailAndPassword(
-                            email: emailController.text,
-                            password: passwordController.text);
-                    /* User(
-                      fullName: fullNameController.text,
-                      email: emailController.text,
-                      password: passwordController.text,
-                    ).addUser();*/
-                  } on FirebaseAuthException catch (e) {
-                    if (e.code == 'weak-password') {
-                      print('The password provided is too weak.');
-                    } else if (e.code == 'email-already-in-use') {
-                      print('The account already exists for that email.');
-                    }
-                  } catch (e) {
-                    print(e);
-                  }
-                },
+                onPressed: () => createUserAndAuthenticaton(),
                 child: Padding(
                   padding: const EdgeInsets.all(15.0),
                   child: Text(

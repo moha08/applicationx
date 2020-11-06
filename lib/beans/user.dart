@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class User {
+class UserProfile {
   String fullName;
   String email;
   String password;
 
-  User({this.fullName, this.email, this.password});
+  UserProfile({this.fullName, this.email, this.password});
 
   CollectionReference users = FirebaseFirestore.instance.collection('users');
 
