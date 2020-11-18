@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:applicationx/login_screen.dart';
 import './beans/users.dart';
 import './backend/login.dart';
+import 'package:country_code_picker/country_code_picker.dart';
 
 class SignupPage extends StatefulWidget {
   @override
@@ -14,6 +15,11 @@ class _State extends State<SignupPage> {
   TextEditingController confirmPasswordController = TextEditingController();
   TextEditingController fullNameController = TextEditingController();
   TextEditingController mobileNumberController = TextEditingController();
+
+  bool _showPassword = true;
+  bool _showConfirmPassword = true;
+  // initalise login object
+  Login login = Login();
 
   @override
   void dispose() {
@@ -97,68 +103,125 @@ class _State extends State<SignupPage> {
                 ),
                 Container(
                   padding: EdgeInsets.all(5),
-                  child: TextField(
-                    obscureText: false,
-                    controller: mobileNumberController,
-                    decoration: InputDecoration(
-                      hintText: 'Please enter a mobile number',
-                      suffixIcon: Icon(Icons.mobile_screen_share),
-                      hintStyle: TextStyle(color: Colors.grey),
-                      filled: true,
-                      fillColor: Colors.white70,
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(12.0)),
-                        borderSide: BorderSide(color: Colors.green, width: 2),
+                  child: Stack(
+                    alignment: Alignment.centerRight,
+                    children: [
+                      TextField(
+                        obscureText: false,
+                        controller: mobileNumberController,
+                        decoration: InputDecoration(
+                          hintText: 'Please enter a mobile number',
+                          //  suffixIcon: Icon(Icons.mobile_screen_share),
+                          hintStyle: TextStyle(color: Colors.grey),
+                          filled: true,
+                          fillColor: Colors.white70,
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(12.0)),
+                            borderSide:
+                                BorderSide(color: Colors.green, width: 2),
+                          ),
+                          border: OutlineInputBorder(),
+                          labelText: 'Mobile Number',
+                        ),
                       ),
-                      border: OutlineInputBorder(),
-                      labelText: 'Mobile Number',
-                    ),
+                      CountryCodePicker(
+                        onChanged: print,
+                        // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
+                        initialSelection: 'JO',
+                        favorite: ['+962', 'JO'],
+                        // optional. Shows only country name and flag
+                        showOnlyCountryWhenClosed: false,
+                        // optional. Shows only country name and flag when popup is closed.
+                        showFlag: true,
+                        // showFlagDialog: true,
+                        flagWidth: 25.0,
+
+                        // optional. aligns the flag and the Text left
+                        alignLeft: false,
+                      ),
+                    ],
                   ),
                 ),
                 Container(
                   padding: EdgeInsets.all(5),
-                  child: TextField(
-                    obscureText: true,
-                    controller: passwordController,
-                    decoration: InputDecoration(
-                      hintText: 'Please enter a password',
-                      // suffixIcon: Icon(Icons.visibility_off),
-                      suffixIcon: Icon(Icons.lock),
-                      hintStyle: TextStyle(color: Colors.grey),
-                      filled: true,
-                      fillColor: Colors.white70,
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(12.0)),
-                        borderSide: BorderSide(color: Colors.green, width: 2),
+                  child: Stack(
+                    alignment: Alignment.centerRight,
+                    children: <Widget>[
+                      TextField(
+                        obscureText: _showPassword,
+                        controller: passwordController,
+                        decoration: InputDecoration(
+                          hintText: 'Please enter a password',
+                          // suffixIcon: Icon(Icons.visibility_off),
+                          suffixIcon: Icon(Icons.lock),
+                          hintStyle: TextStyle(color: Colors.grey),
+                          filled: true,
+                          fillColor: Colors.white70,
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(12.0)),
+                            borderSide:
+                                BorderSide(color: Colors.green, width: 2),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10.0)),
+                            borderSide:
+                                BorderSide(color: Colors.green, width: 2),
+                          ),
+                          border: OutlineInputBorder(),
+                          labelText: 'Password',
+                        ),
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                        borderSide: BorderSide(color: Colors.green, width: 2),
-                      ),
-                      border: OutlineInputBorder(),
-                      labelText: 'Password',
-                    ),
+                      IconButton(
+                        icon: Icon(Icons.lock),
+                        onPressed: () {
+                          setState(() {
+                            _showPassword == true
+                                ? _showPassword = false
+                                : _showPassword = true;
+                          });
+                        },
+                      )
+                    ],
                   ),
                 ),
                 Container(
                   padding: EdgeInsets.all(5),
-                  child: TextField(
-                    obscureText: true,
-                    controller: confirmPasswordController,
-                    decoration: InputDecoration(
-                      hintText: 'Please confirm password',
-                      suffixIcon: Icon(Icons.lock),
-                      hintStyle: TextStyle(color: Colors.grey),
-                      filled: true,
-                      fillColor: Colors.white70,
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(12.0)),
-                        borderSide: BorderSide(color: Colors.green, width: 2),
-                      ),
-                      border: OutlineInputBorder(),
-                      labelText: 'Confirm Password',
-                    ),
-                  ),
+                  child: Stack(
+                      alignment: Alignment.centerRight,
+                      children: <Widget>[
+                        TextField(
+                          obscureText: _showConfirmPassword,
+                          controller: confirmPasswordController,
+                          decoration: InputDecoration(
+                            hintText: 'Please confirm password',
+                            suffixIcon: Icon(Icons.lock),
+                            hintStyle: TextStyle(color: Colors.grey),
+                            filled: true,
+                            fillColor: Colors.white70,
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(12.0)),
+                              borderSide:
+                                  BorderSide(color: Colors.green, width: 2),
+                            ),
+                            border: OutlineInputBorder(),
+                            labelText: 'Confirm Password',
+                          ),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.lock),
+                          onPressed: () {
+                            setState(() {
+                              _showConfirmPassword == true
+                                  ? _showConfirmPassword = false
+                                  : _showConfirmPassword = true;
+                            });
+                          },
+                        )
+                      ]),
                 ),
                 Container(
                     height: 80,
@@ -202,7 +265,7 @@ class _State extends State<SignupPage> {
                                 int.parse(mobileNumberController.text),
                             password: passwordController.text);
 
-                        String sigUpResult = await Login.signUp(user);
+                        String sigUpResult = await login.signUp(user);
                         print(sigUpResult);
 
                         if (sigUpResult == 'success') {

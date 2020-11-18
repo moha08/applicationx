@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:applicationx/login_screen.dart';
+import './backend/login.dart';
 
 class ForgotpasswordPage extends StatefulWidget {
   @override
@@ -7,7 +8,10 @@ class ForgotpasswordPage extends StatefulWidget {
 }
 
 class _State extends State<ForgotpasswordPage> {
-  TextEditingController nameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+
+  // initalise login object
+  Login login = Login();
 
   @override
   Widget build(BuildContext context) {
@@ -26,8 +30,8 @@ class _State extends State<ForgotpasswordPage> {
                 Container(
                   padding: EdgeInsets.all(5),
                   child: TextField(
-                    obscureText: true,
-                    controller: nameController,
+                    obscureText: false,
+                    controller: emailController,
                     decoration: InputDecoration(
                       hintText: 'Please enter your email',
                       suffixIcon: Icon(Icons.mail),
@@ -57,6 +61,8 @@ class _State extends State<ForgotpasswordPage> {
                         ),
                       ),
                       onPressed: () {
+                        login.resetPassword(emailController.text);
+
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => LoginPage()),

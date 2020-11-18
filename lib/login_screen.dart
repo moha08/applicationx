@@ -2,7 +2,6 @@ import 'package:applicationx/signup_screen.dart';
 import 'package:applicationx/home_screen.dart';
 import 'package:applicationx/forgotpassword_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 //import login backend
 import './backend/login.dart';
@@ -15,6 +14,19 @@ class LoginPage extends StatefulWidget {
 class _State extends State<LoginPage> {
   TextEditingController nameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+
+  Login login = Login();
+  bool _showPassword = true;
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is removed from the
+    // widget tree.
+    nameController.clear();
+    passwordController.clear();
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,31 +60,55 @@ class _State extends State<LoginPage> {
                       border: OutlineInputBorder(),
                       labelText: 'Username or Email',
                     ),
+                    textInputAction: TextInputAction.next,
+                    onEditingComplete: () => FocusScope.of(context).nextFocus(),
                   ),
                 ),
                 Container(
                   padding: EdgeInsets.all(5),
-                  child: TextField(
-                    obscureText: true,
-                    controller: passwordController,
-                    decoration: InputDecoration(
-                      hintText: 'Please enter a password',
-                      // suffixIcon: Icon(Icons.visibility_off),
-                      suffixIcon: Icon(Icons.lock),
-                      hintStyle: TextStyle(color: Colors.grey),
-                      filled: true,
-                      fillColor: Colors.white70,
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(12.0)),
-                        borderSide: BorderSide(color: Colors.green, width: 2),
+                  child: Stack(
+                    alignment: Alignment.centerRight,
+                    children: <Widget>[
+                      TextField(
+                        obscureText: _showPassword,
+                        controller: passwordController,
+                        decoration: InputDecoration(
+                          hintText: 'Please enter a password',
+                          // suffixIcon: Icon(Icons.visibility_off),
+
+                          hintStyle: TextStyle(color: Colors.grey),
+                          filled: true,
+                          fillColor: Colors.white70,
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(12.0)),
+                            borderSide:
+                                BorderSide(color: Colors.green, width: 2),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10.0)),
+                            borderSide:
+                                BorderSide(color: Colors.green, width: 2),
+                          ),
+                          border: OutlineInputBorder(),
+                          labelText: 'Password',
+                        ),
+                        textInputAction: TextInputAction.done,
+                        onEditingComplete: () => print("done"),
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                        borderSide: BorderSide(color: Colors.green, width: 2),
+                      IconButton(
+                        icon: Icon(Icons.lock),
+                        onPressed: () {
+                          setState(() {
+                            _showPassword == true
+                                ? _showPassword = false
+                                : _showPassword = true;
+                            print(_showPassword);
+                          });
+                        },
                       ),
-                      border: OutlineInputBorder(),
-                      labelText: 'Password',
-                    ),
+                    ],
                   ),
                 ),
                 FlatButton(
@@ -107,7 +143,7 @@ class _State extends State<LoginPage> {
                         ),
                       ),
                       onPressed: () async {
-                        String signInStatus = await Login.signIn(
+                        String signInStatus = await login.signIn(
                             nameController.text, passwordController.text);
 
                         print(signInStatus);
@@ -157,7 +193,11 @@ class _State extends State<LoginPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => SignupPage()),
-                        );
+                        ).then((value) {
+                          //clear Textfileds when push to new pages
+                          nameController.clear();
+                          passwordController.clear();
+                        });
                       },
                     )
                   ],
