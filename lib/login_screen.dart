@@ -143,15 +143,25 @@ class _State extends State<LoginPage> {
                         ),
                       ),
                       onPressed: () async {
-                        String signInStatus = await login.signIn(
-                            nameController.text, passwordController.text);
+                        String signInStatus = "";
+                        if (nameController.text.isEmpty) {
+                          signInStatus = "Please fill user name";
+                        } else if (passwordController.text.isEmpty) {
+                          signInStatus = "Please fill password";
+                        } else {
+                          signInStatus = await login.signIn(
+                              nameController.text, passwordController.text);
+                        }
 
-                        print(signInStatus);
                         if (signInStatus == 'success') {
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => HomePage()),
-                          );
+                          ).then((value) {
+                            //clear Textfileds when push to new pages
+                            nameController.clear();
+                            passwordController.clear();
+                          });
                         } else {
                           showDialog(
                               context: context,
