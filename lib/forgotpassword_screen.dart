@@ -29,6 +29,12 @@ class _State extends State<ForgotpasswordPage> {
                   height: 300,
                 ),
                 Container(
+                  padding: EdgeInsets.fromLTRB(10, 0, 10, 20),
+                  child: Image(
+                    image: AssetImage("lib/images/productName2.jpeg"),
+                  ),
+                ),
+                Container(
                   padding: EdgeInsets.all(5),
                   child: TextField(
                     obscureText: false,

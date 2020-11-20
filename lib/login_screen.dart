@@ -17,6 +17,7 @@ class _State extends State<LoginPage> {
 
   Login login = Login();
   bool _showPassword = true;
+  IconData _iconVsisble = Icons.visibility_off;
 
   @override
   void dispose() {
@@ -32,15 +33,21 @@ class _State extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('PRODUCT NAME'),
+          title: Text('LOGIN'),
         ),
         body: Padding(
-            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+            padding: EdgeInsets.fromLTRB(10, 30, 10, 30),
             child: ListView(
               children: <Widget>[
                 Image(
                   image: AssetImage("lib/images/userProfile.jpeg"),
                   height: 300,
+                ),
+                Container(
+                  padding: EdgeInsets.fromLTRB(10, 0, 10, 20),
+                  child: Image(
+                    image: AssetImage("lib/images/productName2.jpeg"),
+                  ),
                 ),
                 Container(
                   padding: EdgeInsets.all(5),
@@ -98,13 +105,16 @@ class _State extends State<LoginPage> {
                         onEditingComplete: () => print("done"),
                       ),
                       IconButton(
-                        icon: Icon(Icons.lock),
+                        icon: Icon(_iconVsisble),
                         onPressed: () {
                           setState(() {
                             _showPassword == true
                                 ? _showPassword = false
                                 : _showPassword = true;
-                            print(_showPassword);
+
+                            _iconVsisble == Icons.visibility_off
+                                ? _iconVsisble = Icons.visibility_off
+                                : _iconVsisble = Icons.visibility;
                           });
                         },
                       ),
@@ -130,7 +140,7 @@ class _State extends State<LoginPage> {
                   ),
                 ),
                 Container(
-                    height: 50,
+                    height: 60,
                     padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
                     child: RaisedButton(
                       textColor: Colors.white,

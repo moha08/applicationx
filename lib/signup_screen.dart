@@ -36,7 +36,7 @@ class _State extends State<SignupPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('PRODUCT NAME'),
+          title: Text('SIGN UP'),
           // automaticallyImplyLeading: true,
           //leading: IconButton(
           //icon: Icon(Icons.arrow_back_ios),
@@ -49,7 +49,13 @@ class _State extends State<SignupPage> {
               children: <Widget>[
                 Image(
                   image: AssetImage("lib/images/userProfile.jpeg"),
-                  height: 300,
+                  height: 200,
+                ),
+                Container(
+                  padding: EdgeInsets.fromLTRB(10, 0, 10, 20),
+                  child: Image(
+                    image: AssetImage("lib/images/productName2.jpeg"),
+                  ),
                 ),
                 Container(
                     height: 40,
