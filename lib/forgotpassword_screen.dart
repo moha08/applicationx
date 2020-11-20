@@ -8,7 +8,7 @@ class ForgotpasswordPage extends StatefulWidget {
 
 class _State extends State<ForgotpasswordPage> {
   TextEditingController nameController = TextEditingController();
-//test
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
