@@ -141,7 +141,7 @@ class _State extends State<LoginPage> {
                 ),
                 Container(
                     height: 60,
-                    padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                    padding: EdgeInsets.fromLTRB(5, 0, 5, 5),
                     child: RaisedButton(
                       textColor: Colors.white,
                       color: Colors.green,
@@ -193,12 +193,9 @@ class _State extends State<LoginPage> {
                       },
                     )),
                 new Container(
-                    height: 80,
-                    padding: EdgeInsets.zero,
+                    padding: EdgeInsets.fromLTRB(0, 30, 0, 30),
                     decoration: new BoxDecoration(
-                        shape: BoxShape.circle,
                         image: new DecorationImage(
-                            fit: BoxFit.fill,
                             image: new AssetImage('lib/images/facebook.png')))),
                 Container(
                     child: Row(
