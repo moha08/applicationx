@@ -18,6 +18,9 @@ class _State extends State<SignupPage> {
 
   bool _showPassword = true;
   bool _showConfirmPassword = true;
+  IconData _iconVsisble = Icons.visibility_off;
+  IconData _iconVisible = Icons.visibility_off;
+
   // initalise login object
   Login login = Login();
 
@@ -37,11 +40,6 @@ class _State extends State<SignupPage> {
     return Scaffold(
         appBar: AppBar(
           title: Text('SIGN UP'),
-          // automaticallyImplyLeading: true,
-          //leading: IconButton(
-          //icon: Icon(Icons.arrow_back_ios),
-          //onPressed: () => Navigator.pop(context, false),
-          //),
         ),
         body: Padding(
             padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
@@ -74,7 +72,7 @@ class _State extends State<SignupPage> {
                     controller: fullNameController,
                     decoration: InputDecoration(
                       hintText: 'Please enter a full name',
-                      suffixIcon: Icon(Icons.contact_page),
+                      prefixIcon: Icon(Icons.contact_page),
                       hintStyle: TextStyle(color: Colors.grey),
                       filled: true,
                       fillColor: Colors.white70,
@@ -94,7 +92,7 @@ class _State extends State<SignupPage> {
                     controller: emailController,
                     decoration: InputDecoration(
                       hintText: 'Please enter email',
-                      suffixIcon: Icon(Icons.email),
+                      prefixIcon: Icon(Icons.email),
                       hintStyle: TextStyle(color: Colors.grey),
                       filled: true,
                       fillColor: Colors.white70,
@@ -117,7 +115,7 @@ class _State extends State<SignupPage> {
                         controller: mobileNumberController,
                         decoration: InputDecoration(
                           hintText: 'Please enter a mobile number',
-                          //  suffixIcon: Icon(Icons.mobile_screen_share),
+                          prefixIcon: Icon(Icons.mobile_screen_share),
                           hintStyle: TextStyle(color: Colors.grey),
                           filled: true,
                           fillColor: Colors.white70,
@@ -142,7 +140,6 @@ class _State extends State<SignupPage> {
                         showFlag: true,
                         // showFlagDialog: true,
                         flagWidth: 25.0,
-
                         // optional. aligns the flag and the Text left
                         alignLeft: false,
                       ),
@@ -159,8 +156,7 @@ class _State extends State<SignupPage> {
                         controller: passwordController,
                         decoration: InputDecoration(
                           hintText: 'Please enter a password',
-                          // suffixIcon: Icon(Icons.visibility_off),
-                          suffixIcon: Icon(Icons.lock),
+                          prefixIcon: Icon(Icons.lock),
                           hintStyle: TextStyle(color: Colors.grey),
                           filled: true,
                           fillColor: Colors.white70,
@@ -181,12 +177,15 @@ class _State extends State<SignupPage> {
                         ),
                       ),
                       IconButton(
-                        icon: Icon(Icons.lock),
+                        icon: Icon(_iconVsisble),
                         onPressed: () {
                           setState(() {
-                            _showPassword == true
-                                ? _showPassword = false
-                                : _showPassword = true;
+                            _showPassword == false
+                                ? _showPassword = true
+                                : _showPassword = false;
+                            _iconVsisble == Icons.visibility_off
+                                ? _iconVsisble = Icons.visibility
+                                : _iconVsisble = Icons.visibility_off;
                           });
                         },
                       )
@@ -203,7 +202,7 @@ class _State extends State<SignupPage> {
                           controller: confirmPasswordController,
                           decoration: InputDecoration(
                             hintText: 'Please confirm password',
-                            suffixIcon: Icon(Icons.lock),
+                            prefixIcon: Icon(Icons.lock),
                             hintStyle: TextStyle(color: Colors.grey),
                             filled: true,
                             fillColor: Colors.white70,
@@ -218,12 +217,15 @@ class _State extends State<SignupPage> {
                           ),
                         ),
                         IconButton(
-                          icon: Icon(Icons.lock),
+                          icon: Icon(_iconVisible),
                           onPressed: () {
                             setState(() {
-                              _showConfirmPassword == true
-                                  ? _showConfirmPassword = false
-                                  : _showConfirmPassword = true;
+                              _showConfirmPassword == false
+                                  ? _showConfirmPassword = true
+                                  : _showConfirmPassword = false;
+                              _iconVisible == Icons.visibility_off
+                                  ? _iconVisible = Icons.visibility
+                                  : _iconVisible = Icons.visibility_off;
                             });
                           },
                         )

@@ -111,7 +111,6 @@ class _State extends State<LoginPage> {
                             _showPassword == false
                                 ? _showPassword = true
                                 : _showPassword = false;
-
                             _iconVsisble == Icons.visibility_off
                                 ? _iconVsisble = Icons.visibility
                                 : _iconVsisble = Icons.visibility_off;
