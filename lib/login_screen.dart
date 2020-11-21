@@ -193,13 +193,13 @@ class _State extends State<LoginPage> {
                       },
                     )),
                 new Container(
-                    width: 20.0,
-                    height: 30.0,
+                    height: 80,
+                    padding: EdgeInsets.zero,
                     decoration: new BoxDecoration(
                         shape: BoxShape.circle,
                         image: new DecorationImage(
                             fit: BoxFit.fill,
-                            image: new AssetImage('lib/images/facebook.jpg')))),
+                            image: new AssetImage('lib/images/facebook.png')))),
                 Container(
                     child: Row(
                   children: <Widget>[
