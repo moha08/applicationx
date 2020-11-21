@@ -1,6 +1,7 @@
 import 'package:applicationx/signup_screen.dart';
 import 'package:applicationx/home_screen.dart';
 import 'package:applicationx/forgotpassword_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 //import login backend
@@ -55,8 +56,8 @@ class _State extends State<LoginPage> {
                     obscureText: false, // change from mohammad abdelqader
                     controller: nameController,
                     decoration: InputDecoration(
-                      hintText: 'Please enter username or email',
-                      suffixIcon: Icon(Icons.contact_mail),
+                      hintText: 'Please enter email',
+                      prefixIcon: Icon(Icons.mail),
                       hintStyle: TextStyle(color: Colors.grey),
                       filled: true,
                       fillColor: Colors.white70,
@@ -65,7 +66,7 @@ class _State extends State<LoginPage> {
                         borderSide: BorderSide(color: Colors.green, width: 2),
                       ),
                       border: OutlineInputBorder(),
-                      labelText: 'Username or Email',
+                      labelText: 'Email',
                     ),
                     textInputAction: TextInputAction.next,
                     onEditingComplete: () => FocusScope.of(context).nextFocus(),
@@ -81,8 +82,7 @@ class _State extends State<LoginPage> {
                         controller: passwordController,
                         decoration: InputDecoration(
                           hintText: 'Please enter a password',
-                          // suffixIcon: Icon(Icons.visibility_off),
-
+                          prefixIcon: Icon(Icons.lock),
                           hintStyle: TextStyle(color: Colors.grey),
                           filled: true,
                           fillColor: Colors.white70,
@@ -192,6 +192,14 @@ class _State extends State<LoginPage> {
                         }
                       },
                     )),
+                new Container(
+                    width: 20.0,
+                    height: 30.0,
+                    decoration: new BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: new DecorationImage(
+                            fit: BoxFit.fill,
+                            image: new AssetImage('lib/images/facebook.jpg')))),
                 Container(
                     child: Row(
                   children: <Widget>[
