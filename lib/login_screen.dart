@@ -1,6 +1,7 @@
 import 'package:applicationx/signup_screen.dart';
 import 'package:applicationx/home_screen.dart';
 import 'package:applicationx/forgotpassword_screen.dart';
+// ignore: unused_import
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 

@@ -135,6 +135,8 @@ class _State extends State<SignupPage> {
                         initialSelection: 'JO',
                         favorite: ['+962', 'JO'],
                         // optional. Shows only country name and flag
+                        showCountryOnly: false,
+                        // optional. Shows only country name and flag
                         showOnlyCountryWhenClosed: false,
                         // optional. Shows only country name and flag when popup is closed.
                         showFlag: true,
