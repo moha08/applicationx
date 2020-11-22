@@ -22,9 +22,9 @@ class ProjectxApp extends StatelessWidget {
     );
   }
 }*/
+
 import "package:flutter/material.dart";
 import 'login_screen.dart';
-
 import 'package:firebase_core/firebase_core.dart';
 
 Future<void> main() async {
