@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 
 //import login backend
 import './backend/login.dart';
+import './show_dialog.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -51,72 +52,30 @@ class _State extends State<LoginPage> {
                     image: AssetImage("lib/images/productName2.jpeg"),
                   ),
                 ),
-                Container(
-                  padding: EdgeInsets.all(5),
-                  child: TextField(
-                    obscureText: false, // change from mohammad abdelqader
-                    controller: nameController,
-                    decoration: InputDecoration(
-                      hintText: 'Please enter email',
-                      prefixIcon: Icon(Icons.mail),
-                      hintStyle: TextStyle(color: Colors.grey),
-                      filled: true,
-                      fillColor: Colors.white70,
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(12.0)),
-                        borderSide: BorderSide(color: Colors.green, width: 2),
-                      ),
-                      border: OutlineInputBorder(),
-                      labelText: 'Email',
-                    ),
-                    textInputAction: TextInputAction.next,
-                    onEditingComplete: () => FocusScope.of(context).nextFocus(),
-                  ),
+                LoginTextFields(
+                  hintText: 'Please enter email',
+                  labelText: 'Email',
+                  nameController: nameController,
+                  textFieldIcon: Icon(Icons.mail),
+                  isSecureText: false,
+                  onCompleteTextField: () => FocusScope.of(context).nextFocus(),
                 ),
                 Container(
                   padding: EdgeInsets.all(5),
                   child: Stack(
                     alignment: Alignment.centerRight,
                     children: <Widget>[
-                      TextField(
-                        obscureText: _showPassword,
-                        controller: passwordController,
-                        decoration: InputDecoration(
-                          hintText: 'Please enter a password',
-                          prefixIcon: Icon(Icons.lock),
-                          hintStyle: TextStyle(color: Colors.grey),
-                          filled: true,
-                          fillColor: Colors.white70,
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(12.0)),
-                            borderSide:
-                                BorderSide(color: Colors.green, width: 2),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(10.0)),
-                            borderSide:
-                                BorderSide(color: Colors.green, width: 2),
-                          ),
-                          border: OutlineInputBorder(),
-                          labelText: 'Password',
-                        ),
-                        textInputAction: TextInputAction.done,
-                        onEditingComplete: () => print("done"),
+                      LoginTextFields(
+                        hintText: 'Please enter a password',
+                        labelText: 'Password',
+                        nameController: passwordController,
+                        textFieldIcon: Icon(Icons.lock),
+                        isSecureText: _showPassword,
+                        onCompleteTextField: () => print("done"),
                       ),
                       IconButton(
                         icon: Icon(_iconVsisble),
-                        onPressed: () {
-                          setState(() {
-                            _showPassword == false
-                                ? _showPassword = true
-                                : _showPassword = false;
-                            _iconVsisble == Icons.visibility_off
-                                ? _iconVsisble = Icons.visibility
-                                : _iconVsisble = Icons.visibility_off;
-                          });
-                        },
+                        onPressed: visablePassword,
                       ),
                     ],
                   ),
@@ -127,7 +86,10 @@ class _State extends State<LoginPage> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => ForgotpasswordPage()),
-                    );
+                    ).then((value) {
+                      nameController.clear();
+                      passwordController.clear();
+                    });
                     //forgot password screen
                   },
                   textColor: Colors.green,
@@ -173,26 +135,15 @@ class _State extends State<LoginPage> {
                             passwordController.clear();
                           });
                         } else {
-                          showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: Text("Message"),
-                                  content: Text(signInStatus),
-                                  actions: [
-                                    FlatButton(
-                                      child: Text("Ok"),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                    )
-                                  ],
-                                );
-                              });
+                          ShowDialogMessage.dialogShow(
+                            context,
+                            signInStatus,
+                            "Message",
+                          );
                         }
                       },
                     )),
-                new Container(
+                Container(
                     padding: EdgeInsets.fromLTRB(0, 30, 0, 30),
                     decoration: new BoxDecoration(
                         image: new DecorationImage(
@@ -230,5 +181,57 @@ class _State extends State<LoginPage> {
                 ))
               ],
             )));
+  }
+
+  void visablePassword() {
+    setState(() {
+      _showPassword == false ? _showPassword = true : _showPassword = false;
+      _iconVsisble == Icons.visibility_off
+          ? _iconVsisble = Icons.visibility
+          : _iconVsisble = Icons.visibility_off;
+    });
+  }
+}
+
+// Widget for Login TextFields
+class LoginTextFields extends StatelessWidget {
+  final TextEditingController nameController;
+  final String hintText;
+  final String labelText;
+  final Widget textFieldIcon;
+  final bool isSecureText;
+  final Function onCompleteTextField;
+
+  LoginTextFields(
+      {@required this.hintText,
+      @required this.labelText,
+      @required this.textFieldIcon,
+      @required this.nameController,
+      @required this.isSecureText,
+      @required this.onCompleteTextField});
+//
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(5),
+      child: TextField(
+          obscureText: isSecureText, // change from mohammad abdelqader
+          controller: nameController,
+          decoration: InputDecoration(
+            hintText: hintText,
+            prefixIcon: textFieldIcon,
+            hintStyle: TextStyle(color: Colors.grey),
+            filled: true,
+            fillColor: Colors.white70,
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(12.0)),
+              borderSide: BorderSide(color: Colors.green, width: 2),
+            ),
+            border: OutlineInputBorder(),
+            labelText: labelText,
+          ),
+          textInputAction: TextInputAction.next,
+          onEditingComplete: onCompleteTextField),
+    );
   }
 }
