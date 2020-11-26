@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../beans/users.dart';
+import '../metadata/errors_enum.dart';
+
 
 class Login {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -15,18 +17,16 @@ class Login {
         password: password,
       );
 
-      if (!userCredential.user.emailVerified) return "email not verified";
+      if (!userCredential.user.emailVerified)
+        return ErrorEnum.VERIFICATION_MAIL_ERROR;
 
       signInResult = "success";
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        print('No user found for that email.');
-        signInResult = 'No user found for that email.';
+        signInResult = ErrorEnum.NO_USER_FOUND_ERROR;
       } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
-        signInResult = 'Wrong password provided for that user.';
+        signInResult = ErrorEnum.WRONG_PASSWORD_ERROR;
       } else {
-        print(e.message);
         signInResult = e.message;
       }
     }
@@ -50,24 +50,22 @@ class Login {
       await userCredential.user.sendEmailVerification();
       //return user.uid;
     } catch (e) {
-      print("An error occured while trying to send email verification");
+      signUpResult = ErrorEnum.VERIFICATION_MAIL_ERROR;
+      // print("An error occured while trying to send email verification");
       print(e.message);
     }
 
-    print(signUpResult);
     // Add user to firebase cloud storage
     if (signUpResult == "success") {
       CollectionReference users =
           FirebaseFirestore.instance.collection('users');
-      users
-          .add({
-            'full_name': user.fullName,
-            'email': user.email,
-            'password': user.password,
-            'mobile_number': user.mobileNumber
-          })
-          .then((value) => signUpResult = "User Added")
-          .catchError((error) => signUpResult = "Failed to add user: $error");
+      users.add({
+        'full_name': user.fullName,
+        'email': user.email,
+        'password': user.password,
+        'mobile_number': user.mobileNumber
+      }).catchError(
+          (error) => signUpResult = "$ErrorEnum.FAILED_ADD_USER_ERROR $error");
       return signUpResult;
     }
 

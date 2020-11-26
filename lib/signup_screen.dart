@@ -3,6 +3,11 @@ import 'package:applicationx/login_screen.dart';
 import './beans/users.dart';
 import './backend/login.dart';
 import 'package:country_code_picker/country_code_picker.dart';
+import './custom_text_field.dart';
+import './show_dialog.dart';
+import './metadata/strings_enum.dart';
+import './metadata/images_path_enum.dart';
+import './metadata/errors_enum.dart';
 
 class SignupPage extends StatefulWidget {
   @override
@@ -39,95 +44,61 @@ class _State extends State<SignupPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('SIGN UP'),
+          title: Text(StringEnum.SIGN_UP_TITLE),
         ),
         body: Padding(
             padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
             child: ListView(
               children: <Widget>[
                 Image(
-                  image: AssetImage("lib/images/userProfile.jpeg"),
+                  image: AssetImage(ImagesPathEnum.USER_PROFILE_IMG),
                   height: 200,
                 ),
                 Container(
                   padding: EdgeInsets.fromLTRB(10, 0, 10, 20),
                   child: Image(
-                    image: AssetImage("lib/images/productName2.jpeg"),
+                    image: AssetImage(ImagesPathEnum.PRODUCT_NAME_IMG),
                   ),
                 ),
                 Container(
                     height: 40,
                     child: Text(
-                      'Create New Account',
+                      StringEnum.CREATE_NEW_ACCT_TEXT,
                       style: TextStyle(
                         color: Colors.green,
                         fontWeight: FontWeight.bold,
                         fontSize: 20,
                       ),
                     )),
-                Container(
-                  padding: EdgeInsets.all(5),
-                  child: TextField(
-                    obscureText: false,
-                    controller: fullNameController,
-                    decoration: InputDecoration(
-                      hintText: 'Please enter a full name',
-                      prefixIcon: Icon(Icons.contact_page),
-                      hintStyle: TextStyle(color: Colors.grey),
-                      filled: true,
-                      fillColor: Colors.white70,
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(12.0)),
-                        borderSide: BorderSide(color: Colors.green, width: 2),
-                      ),
-                      border: OutlineInputBorder(),
-                      labelText: 'Full Name',
-                    ),
-                  ),
+                CustomTextFields(
+                  hintText: StringEnum.FULL_NAME_HINT_TEXT,
+                  isSecureText: false,
+                  labelText: StringEnum.FULL_NAME_LABEL_TEXT,
+                  nameController: fullNameController,
+                  onCompleteTextField: () => FocusScope.of(context).nextFocus(),
+                  textFieldIcon: Icon(Icons.contact_page),
                 ),
-                Container(
-                  padding: EdgeInsets.all(5),
-                  child: TextField(
-                    obscureText: false,
-                    controller: emailController,
-                    decoration: InputDecoration(
-                      hintText: 'Please enter email',
-                      prefixIcon: Icon(Icons.email),
-                      hintStyle: TextStyle(color: Colors.grey),
-                      filled: true,
-                      fillColor: Colors.white70,
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(12.0)),
-                        borderSide: BorderSide(color: Colors.green, width: 2),
-                      ),
-                      border: OutlineInputBorder(),
-                      labelText: 'Email',
-                    ),
-                  ),
+                CustomTextFields(
+                  hintText: StringEnum.EMAIL_HINT_TEXT,
+                  isSecureText: false,
+                  labelText: StringEnum.EMAIL_LABEL_TEXT,
+                  nameController: emailController,
+                  onCompleteTextField: () => FocusScope.of(context).nextFocus(),
+                  textFieldIcon: Icon(Icons.email),
                 ),
                 Container(
                   padding: EdgeInsets.all(5),
                   child: Stack(
                     alignment: Alignment.centerRight,
                     children: [
-                      TextField(
-                        obscureText: false,
-                        controller: mobileNumberController,
-                        decoration: InputDecoration(
-                          hintText: 'Please enter a mobile number',
-                          prefixIcon: Icon(Icons.mobile_screen_share),
-                          hintStyle: TextStyle(color: Colors.grey),
-                          filled: true,
-                          fillColor: Colors.white70,
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(12.0)),
-                            borderSide:
-                                BorderSide(color: Colors.green, width: 2),
-                          ),
-                          border: OutlineInputBorder(),
-                          labelText: 'Mobile Number',
-                        ),
+                      CustomTextFields(
+                        hintText: StringEnum.MOBILE_HINT_TEXT,
+                        isSecureText: false,
+                        labelText: StringEnum.MOBILE_LABEL_TEXT,
+                        nameController: mobileNumberController,
+                        onCompleteTextField: () =>
+                            FocusScope.of(context).nextFocus(),
+                        textFieldIcon: Icon(Icons.mobile_screen_share),
                       ),
                       CountryCodePicker(
                         onChanged: print,
@@ -153,30 +124,14 @@ class _State extends State<SignupPage> {
                   child: Stack(
                     alignment: Alignment.centerRight,
                     children: <Widget>[
-                      TextField(
-                        obscureText: _showPassword,
-                        controller: passwordController,
-                        decoration: InputDecoration(
-                          hintText: 'Please enter a password',
-                          prefixIcon: Icon(Icons.lock),
-                          hintStyle: TextStyle(color: Colors.grey),
-                          filled: true,
-                          fillColor: Colors.white70,
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(12.0)),
-                            borderSide:
-                                BorderSide(color: Colors.green, width: 2),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(10.0)),
-                            borderSide:
-                                BorderSide(color: Colors.green, width: 2),
-                          ),
-                          border: OutlineInputBorder(),
-                          labelText: 'Password',
-                        ),
+                      CustomTextFields(
+                        hintText: StringEnum.PASSWORD_HINT_TEXT,
+                        isSecureText: _showPassword,
+                        labelText: StringEnum.PASSWORD_LABEL_TEXT,
+                        nameController: passwordController,
+                        onCompleteTextField: () =>
+                            FocusScope.of(context).nextFocus(),
+                        textFieldIcon: Icon(Icons.lock),
                       ),
                       IconButton(
                         icon: Icon(_iconVsisble),
@@ -199,24 +154,14 @@ class _State extends State<SignupPage> {
                   child: Stack(
                       alignment: Alignment.centerRight,
                       children: <Widget>[
-                        TextField(
-                          obscureText: _showConfirmPassword,
-                          controller: confirmPasswordController,
-                          decoration: InputDecoration(
-                            hintText: 'Please confirm password',
-                            prefixIcon: Icon(Icons.lock),
-                            hintStyle: TextStyle(color: Colors.grey),
-                            filled: true,
-                            fillColor: Colors.white70,
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(12.0)),
-                              borderSide:
-                                  BorderSide(color: Colors.green, width: 2),
-                            ),
-                            border: OutlineInputBorder(),
-                            labelText: 'Confirm Password',
-                          ),
+                        CustomTextFields(
+                          hintText: StringEnum.PASSWORD_CONFIRM_HINT_TEXT,
+                          isSecureText: _showPassword,
+                          labelText: StringEnum.PASSWORD_CONFIRM_LABEL_TEXT,
+                          nameController: confirmPasswordController,
+                          onCompleteTextField: () =>
+                              FocusScope.of(context).nextFocus(),
+                          textFieldIcon: Icon(Icons.lock),
                         ),
                         IconButton(
                           icon: Icon(_iconVisible),
@@ -240,71 +185,47 @@ class _State extends State<SignupPage> {
                       textColor: Colors.white,
                       color: Colors.green,
                       child: Text(
-                        'Sign up',
+                        StringEnum.SIGN_UP_TEXT,
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      onPressed: () async {
-                        if (passwordController.text !=
-                            confirmPasswordController.text) {
-                          showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: Text("Error"),
-                                  content: Text(
-                                      "password and confirm password do not match"),
-                                  actions: [
-                                    FlatButton(
-                                      child: Text("Ok"),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                    )
-                                  ],
-                                );
-                              });
-                          return;
-                        }
-                        Users user = Users(
-                            fullName: fullNameController.text,
-                            email: emailController.text,
-                            mobileNumber:
-                                int.parse(mobileNumberController.text),
-                            password: passwordController.text);
-
-                        String sigUpResult = await login.signUp(user);
-                        print(sigUpResult);
-
-                        if (sigUpResult == 'success') {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => LoginPage()),
-                          );
-                        } else {
-                          showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: Text("Error"),
-                                  content: Text(sigUpResult),
-                                  actions: [
-                                    FlatButton(
-                                      child: Text("Ok"),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                    )
-                                  ],
-                                );
-                              });
-                        }
-                      },
+                      onPressed: signUpFun,
                     )),
               ],
             )));
+  }
+
+  void signUpFun() async {
+    if (passwordController.text != confirmPasswordController.text) {
+      ShowDialogMessage.dialogShow(
+        context,
+        ErrorEnum.CONFIRM_PASSWORD_STRING_ERROR,
+        "Error",
+      );
+      return;
+    }
+    Users user = Users(
+        fullName: fullNameController.text,
+        email: emailController.text,
+        mobileNumber: int.parse(mobileNumberController.text),
+        password: passwordController.text);
+
+    String sigUpResult = await login.signUp(user);
+    print(sigUpResult);
+
+    if (sigUpResult == 'success') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => LoginPage()),
+      );
+    } else {
+      ShowDialogMessage.dialogShow(
+        context,
+        sigUpResult,
+        "Error",
+      );
+    }
   }
 }

@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:applicationx/login_screen.dart';
 import './backend/login.dart';
+import './metadata/strings_enum.dart';
+import './metadata/images_path_enum.dart';
+import './custom_text_field.dart';
+import './show_dialog.dart';
+import './metadata/errors_enum.dart';
 
 class ForgotpasswordPage extends StatefulWidget {
   @override
@@ -18,41 +23,29 @@ class _State extends State<ForgotpasswordPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('FORGOT PASSWORD'),
+          title: Text(StringEnum.FORGOT_PASSWORD_TEXT),
         ),
         body: Padding(
             padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
             child: ListView(
               children: <Widget>[
                 Image(
-                  image: AssetImage("lib/images/userProfile.jpeg"),
+                  image: AssetImage(ImagesPathEnum.USER_PROFILE_IMG),
                   height: 300,
                 ),
                 Container(
                   padding: EdgeInsets.fromLTRB(10, 0, 10, 20),
                   child: Image(
-                    image: AssetImage("lib/images/productName2.jpeg"),
+                    image: AssetImage(ImagesPathEnum.PRODUCT_NAME_IMG),
                   ),
                 ),
-                Container(
-                  padding: EdgeInsets.all(5),
-                  child: TextField(
-                    obscureText: false,
-                    controller: emailController,
-                    decoration: InputDecoration(
-                      hintText: 'Please enter your email',
-                      suffixIcon: Icon(Icons.mail),
-                      hintStyle: TextStyle(color: Colors.grey),
-                      filled: true,
-                      fillColor: Colors.white70,
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(12.0)),
-                        borderSide: BorderSide(color: Colors.green, width: 2),
-                      ),
-                      border: OutlineInputBorder(),
-                      labelText: 'Email',
-                    ),
-                  ),
+                CustomTextFields(
+                  hintText: StringEnum.EMAIL_HINT_TEXT,
+                  labelText: StringEnum.EMAIL_LABEL_TEXT,
+                  nameController: emailController,
+                  textFieldIcon: Icon(Icons.mail),
+                  isSecureText: false,
+                  onCompleteTextField: resetPassword,
                 ),
                 Container(
                     height: 80,
@@ -61,22 +54,33 @@ class _State extends State<ForgotpasswordPage> {
                       textColor: Colors.white,
                       color: Colors.green,
                       child: Text(
-                        'Send',
+                        StringEnum.SEND_BUTTON_TEXT,
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      onPressed: () {
-                        login.resetPassword(emailController.text);
-
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => LoginPage()),
-                        ); //signup screen
-                      },
+                      onPressed: resetPassword,
                     ))
               ],
             )));
+  }
+
+  void resetPassword() {
+    if (emailController.text.isEmpty) {
+      ShowDialogMessage.dialogShow(
+        context,
+        ErrorEnum.EMPTY_STRING_ERROR,
+        "Message",
+      );
+      return;
+    }
+
+    login.resetPassword(emailController.text);
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => LoginPage()),
+    ); //signup screen
   }
 }
