@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:applicationx/signup_screen.dart';
 import 'package:applicationx/home_screen.dart';
 import 'package:applicationx/forgotpassword_screen.dart';
@@ -8,6 +10,22 @@ import 'package:flutter/material.dart';
 //import login backend
 import './backend/login.dart';
 import './show_dialog.dart';
+import './metadata/errors_enum.dart';
+import './metadata/strings_enum.dart';
+import './metadata/images_path_enum.dart';
+import './custom_text_field.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+
+class LoginPageMain extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      theme: ThemeData(primarySwatch: Colors.green),
+      home: LoginPage(),
+      builder: EasyLoading.init(),
+    );
+  }
+}
 
 class LoginPage extends StatefulWidget {
   @override
@@ -15,6 +33,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _State extends State<LoginPage> {
+  Timer _timer;
   TextEditingController nameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
@@ -36,25 +55,25 @@ class _State extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('LOGIN'),
+          title: Text(StringEnum.LOGON_TITLE),
         ),
         body: Padding(
             padding: EdgeInsets.fromLTRB(10, 30, 10, 30),
             child: ListView(
               children: <Widget>[
                 Image(
-                  image: AssetImage("lib/images/userProfile.jpeg"),
+                  image: AssetImage(ImagesPathEnum.USER_PROFILE_IMG),
                   height: 300,
                 ),
                 Container(
                   padding: EdgeInsets.fromLTRB(10, 0, 10, 20),
                   child: Image(
-                    image: AssetImage("lib/images/productName2.jpeg"),
+                    image: AssetImage(ImagesPathEnum.PRODUCT_NAME_IMG),
                   ),
                 ),
-                LoginTextFields(
-                  hintText: 'Please enter email',
-                  labelText: 'Email',
+                CustomTextFields(
+                  hintText: StringEnum.EMAIL_HINT_TEXT,
+                  labelText: StringEnum.EMAIL_LABEL_TEXT,
                   nameController: nameController,
                   textFieldIcon: Icon(Icons.mail),
                   isSecureText: false,
@@ -65,13 +84,13 @@ class _State extends State<LoginPage> {
                   child: Stack(
                     alignment: Alignment.centerRight,
                     children: <Widget>[
-                      LoginTextFields(
-                        hintText: 'Please enter a password',
-                        labelText: 'Password',
+                      CustomTextFields(
+                        hintText: StringEnum.PASSWORD_HINT_TEXT,
+                        labelText: StringEnum.PASSWORD_LABEL_TEXT,
                         nameController: passwordController,
                         textFieldIcon: Icon(Icons.lock),
                         isSecureText: _showPassword,
-                        onCompleteTextField: () => print("done"),
+                        onCompleteTextField: loginFun,
                       ),
                       IconButton(
                         icon: Icon(_iconVsisble),
@@ -94,7 +113,7 @@ class _State extends State<LoginPage> {
                   },
                   textColor: Colors.green,
                   child: Text(
-                    'Forgot Password?',
+                    StringEnum.FORGOT_PASSWORD_TEXT,
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
@@ -108,57 +127,32 @@ class _State extends State<LoginPage> {
                       textColor: Colors.white,
                       color: Colors.green,
                       child: Text(
-                        'Login',
+                        StringEnum.LOGIN_TEXT,
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      onPressed: () async {
-                        String signInStatus = "";
-                        if (nameController.text.isEmpty) {
-                          signInStatus = "Please fill user name";
-                        } else if (passwordController.text.isEmpty) {
-                          signInStatus = "Please fill password";
-                        } else {
-                          signInStatus = await login.signIn(
-                              nameController.text, passwordController.text);
-                        }
-
-                        if (signInStatus == 'success') {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => HomePage()),
-                          ).then((value) {
-                            //clear Textfileds when push to new pages
-                            nameController.clear();
-                            passwordController.clear();
-                          });
-                        } else {
-                          ShowDialogMessage.dialogShow(
-                            context,
-                            signInStatus,
-                            "Message",
-                          );
-                        }
-                      },
+                      onPressed: loginFun,
                     )),
                 Container(
                     padding: EdgeInsets.fromLTRB(0, 30, 0, 30),
                     decoration: new BoxDecoration(
                         image: new DecorationImage(
-                            image: new AssetImage('lib/images/facebook.png')))),
+                            image: new AssetImage(
+                      ImagesPathEnum.FACEBOOK_IMG,
+                    )))),
                 Container(
                     child: Row(
                   children: <Widget>[
                     Text(
-                      'Do not have account?',
+                      StringEnum.ACCOUNT_QUESTION_TEXT,
                       style: TextStyle(fontSize: 15),
                     ),
                     FlatButton(
                       textColor: Colors.green,
                       child: Text(
-                        'Sign Up',
+                        StringEnum.SIGN_UP_TEXT,
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
@@ -191,47 +185,55 @@ class _State extends State<LoginPage> {
           : _iconVsisble = Icons.visibility_off;
     });
   }
-}
 
-// Widget for Login TextFields
-class LoginTextFields extends StatelessWidget {
-  final TextEditingController nameController;
-  final String hintText;
-  final String labelText;
-  final Widget textFieldIcon;
-  final bool isSecureText;
-  final Function onCompleteTextField;
+  void loginFun() async {
+    configIndicator();
 
-  LoginTextFields(
-      {@required this.hintText,
-      @required this.labelText,
-      @required this.textFieldIcon,
-      @required this.nameController,
-      @required this.isSecureText,
-      @required this.onCompleteTextField});
-//
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(5),
-      child: TextField(
-          obscureText: isSecureText, // change from mohammad abdelqader
-          controller: nameController,
-          decoration: InputDecoration(
-            hintText: hintText,
-            prefixIcon: textFieldIcon,
-            hintStyle: TextStyle(color: Colors.grey),
-            filled: true,
-            fillColor: Colors.white70,
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(12.0)),
-              borderSide: BorderSide(color: Colors.green, width: 2),
-            ),
-            border: OutlineInputBorder(),
-            labelText: labelText,
-          ),
-          textInputAction: TextInputAction.next,
-          onEditingComplete: onCompleteTextField),
+    await EasyLoading.show(
+      status: 'loading...',
     );
+    String signInStatus = "";
+    if (nameController.text.isEmpty || passwordController.text.isEmpty) {
+      signInStatus = ErrorEnum.EMPTY_STRING_ERROR;
+    } else {
+      signInStatus =
+          await login.signIn(nameController.text, passwordController.text);
+    }
+
+    if (signInStatus == 'success') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage()),
+      ).then((value) {
+        //clear Textfileds when push to new pages
+        nameController.clear();
+        passwordController.clear();
+      });
+    } else {
+      ShowDialogMessage.dialogShow(
+        context,
+        signInStatus,
+        "Message",
+      );
+    }
+
+    _timer?.cancel();
+    EasyLoading.dismiss();
+  }
+
+  void configIndicator() {
+    EasyLoading.instance
+      ..displayDuration = const Duration(milliseconds: 2000)
+      ..indicatorType = EasyLoadingIndicatorType.fadingCircle
+      ..loadingStyle = EasyLoadingStyle.custom
+      ..indicatorSize = 45.0
+      ..radius = 10.0
+      ..progressColor = Colors.white
+      ..backgroundColor = Colors.green
+      ..indicatorColor = Colors.white
+      ..textColor = Colors.white
+      ..maskColor = Colors.green.withOpacity(0.5)
+      ..userInteractions = true
+      ..dismissOnTap = false;
   }
 }
