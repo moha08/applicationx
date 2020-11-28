@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:applicationx/event_screen.dart';
+import 'package:applicationx/team_screen.dart';
+import 'package:applicationx/chat_screen.dart';
+import 'package:applicationx/setting_screen.dart';
+import 'package:applicationx/profile_screen.dart';
+import 'package:ff_navigation_bar/ff_navigation_bar.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key}) : super(key: key);
@@ -9,57 +15,64 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
   int selectedIndex = 0;
-  final widgetOptions = [
-    Text('Events List'),
-    Text('Team List'),
-    Text('Chats'),
-    Text('Settings'),
-    Text('Profile')
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:
-          AppBar(title: const Text('Events'), backgroundColor: Colors.green),
       body: Center(
-        child: widgetOptions.elementAt(selectedIndex),
+        child: selectedPage(selectedIndex),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        iconSize: 36,
-        showUnselectedLabels: true,
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-              icon: Icon(Icons.event),
-              title: Text('Events'),
-              backgroundColor: Colors.green),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.group),
-              title: Text('Teams'),
-              backgroundColor: Colors.green),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.chat),
-              title: Text('Chats'),
-              backgroundColor: Colors.green),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.settings),
-              title: Text('Settings'),
-              backgroundColor: Colors.green),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.contact_page),
-              title: Text('Profile'),
-              backgroundColor: Colors.green),
+      bottomNavigationBar: FFNavigationBar(
+        theme: FFNavigationBarTheme(
+          barBackgroundColor: Colors.green,
+          selectedItemBorderColor: Colors.white,
+          unselectedItemIconColor: Colors.white,
+          unselectedItemLabelColor: Colors.white,
+          selectedItemBackgroundColor: Colors.pink,
+          selectedItemIconColor: Colors.white,
+          selectedItemLabelColor: Colors.pink,
+        ),
+        selectedIndex: selectedIndex,
+        onSelectTab: (index) {
+          setState(() {
+            selectedIndex = index;
+          });
+        },
+        items: [
+          FFNavigationBarItem(
+            iconData: Icons.event,
+            label: 'Events',
+          ),
+          FFNavigationBarItem(
+            iconData: Icons.people,
+            label: 'Teams',
+          ),
+          FFNavigationBarItem(
+            iconData: Icons.chat,
+            label: 'Chat',
+          ),
+          FFNavigationBarItem(
+            iconData: Icons.settings,
+            label: 'Settings',
+          ),
+          FFNavigationBarItem(
+            iconData: Icons.person,
+            label: 'Profile',
+          ),
         ],
-        currentIndex: selectedIndex,
-        fixedColor: Colors.pink,
-        onTap: onItemTapped,
       ),
     );
   }
+}
 
-  void onItemTapped(int index) {
-    setState(() {
-      selectedIndex = index;
-    });
-  }
+Widget selectedPage(int index) {
+  if (index == 0) {
+    return EventPage();
+  } else if (index == 1) {
+    return TeamPage();
+  } else if (index == 2) {
+    return ChatPage();
+  } else if (index == 3) {
+    return SettingPage();
+  } else
+    return ProfilePage();
 }

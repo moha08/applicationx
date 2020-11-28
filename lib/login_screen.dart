@@ -8,12 +8,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 //import login backend
-import './backend/login.dart';
-import './show_dialog.dart';
-import './metadata/errors_enum.dart';
-import './metadata/strings_enum.dart';
-import './metadata/images_path_enum.dart';
-import './custom_text_field.dart';
+import 'backend/login.dart';
+import 'show_dialog.dart';
+import 'metadata/errors_enum.dart';
+import 'metadata/strings_enum.dart';
+import 'metadata/images_path_enum.dart';
+import 'custom_text_field.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class LoginPageMain extends StatelessWidget {
