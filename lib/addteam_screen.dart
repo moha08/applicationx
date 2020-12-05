@@ -1,12 +1,8 @@
 import 'dart:io';
-import 'show_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:applicationx/login_screen.dart';
 import 'package:applicationx/team_screen.dart';
 import 'package:image_picker/image_picker.dart';
-import './backend/teams.dart';
-import './beans/team.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class AddteamPage extends StatefulWidget {
   @override
@@ -15,32 +11,14 @@ class AddteamPage extends StatefulWidget {
 
 class _State extends State<AddteamPage> {
   File _image;
-  var picker = ImagePicker();
   TextEditingController nameController = TextEditingController();
-  TextEditingController descController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
   int _value = 1;
 
-  @override
-  void dispose() {
-    super.dispose();
-    _image = null;
-    picker = null;
-  }
-
-  Future getImage(String source) async {
-    PickedFile pickedFile;
-
-    if (source == 'From Gallery') {
-      pickedFile = await picker.getImage(source: ImageSource.gallery);
-    } else {
-      pickedFile = await picker.getImage(source: ImageSource.camera);
-    }
+  Future getImage(ImageSource media) async {
+    var img = await ImagePicker.pickImage(source: media);
     setState(() {
-      if (pickedFile != null) {
-        _image = File(pickedFile.path);
-      } else {
-        print('No image selected.');
-      }
+      _image = img;
     });
   }
 
@@ -59,7 +37,7 @@ class _State extends State<AddteamPage> {
                   FlatButton(
                     onPressed: () {
                       Navigator.pop(context);
-                      getImage('From Gallery');
+                      getImage(ImageSource.gallery);
                     },
                     child: Row(
                       children: <Widget>[
@@ -71,12 +49,82 @@ class _State extends State<AddteamPage> {
                   FlatButton(
                     onPressed: () {
                       Navigator.pop(context);
-                      getImage('From Camera');
+                      getImage(ImageSource.camera);
                     },
                     child: Row(
                       children: <Widget>[
                         Icon(Icons.camera),
                         Text('From Camera'),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  void myAlert1() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            title: Text(
+              'Send an Invitation By:',
+              style: TextStyle(
+                color: Colors.green,
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+              ),
+            ),
+            content: Container(
+              height: MediaQuery.of(context).size.height / 6,
+              child: Column(
+                children: <Widget>[
+                  FlatButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Row(
+                      children: <Widget>[
+                        Image(
+                          image: AssetImage("lib/images/Email.jpeg"),
+                          height: 40,
+                          width: 40,
+                        ),
+                        Text(
+                          'Email',
+                          style: TextStyle(
+                            color: Colors.blueGrey,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 17,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  FlatButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Row(
+                      children: <Widget>[
+                        Image(
+                          image: AssetImage("lib/images/WhatsApp.jpeg"),
+                          height: 40,
+                          width: 40,
+                        ),
+                        Text(
+                          'WhatsApp',
+                          style: TextStyle(
+                            color: Colors.blueGrey,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 17,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -133,7 +181,7 @@ class _State extends State<AddteamPage> {
               child: TextField(
                 obscureText: false,
                 maxLines: 5,
-                controller: descController,
+                //controller: nameController,
                 decoration: InputDecoration(
                   hintText: 'Please enter description',
                   //suffixIcon: Icon(Icons.contact_page),
@@ -154,7 +202,7 @@ class _State extends State<AddteamPage> {
               //color: Colors.orangeAccent,
               child: DecoratedBox(
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.green),
+                  border: Border.all(color: Colors.green, width: 2),
                   color: Colors.white,
                   borderRadius: BorderRadius.all(
                     Radius.circular(8),
@@ -172,7 +220,8 @@ class _State extends State<AddteamPage> {
                           DropdownMenuItem(
                             child: Text(
                               'Select Team Type',
-                              style: TextStyle(fontSize: 17),
+                              style: TextStyle(
+                                  fontSize: 16, color: Colors.grey[700]),
                               //  fontWeight: FontWeight.bold),
                               // textAlign: TextAlign.center,
                             ),
@@ -181,14 +230,16 @@ class _State extends State<AddteamPage> {
                           DropdownMenuItem(
                             child: Text(
                               'Company',
-                              style: TextStyle(fontSize: 17),
+                              style: TextStyle(
+                                  fontSize: 16, color: Colors.grey[700]),
                             ),
                             value: 2,
                           ),
                           DropdownMenuItem(
                             child: Text(
                               'Friends',
-                              style: TextStyle(fontSize: 17),
+                              style: TextStyle(
+                                  fontSize: 16, color: Colors.grey[700]),
                             ),
                             value: 3,
                           ),
@@ -255,10 +306,7 @@ class _State extends State<AddteamPage> {
                     ),
                   ),
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => LoginPage()),
-                    );
+                    myAlert1();
                   },
                 )),
             Container(
@@ -274,36 +322,16 @@ class _State extends State<AddteamPage> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  onPressed: () => getData(),
+                  onPressed: () {
+                    Navigator.pop(
+                      context,
+                      MaterialPageRoute(builder: (context) => TeamPage()),
+                    );
+                  },
                 )),
           ],
         ),
       ),
     );
-  }
-
-  void getData() async {
-    EasyLoading.show(
-      status: 'loading...',
-    );
-    Team teamObj = Team(
-        name: nameController.text,
-        desc: descController.text,
-        type: _value,
-        image: _image);
-    String str = await Teams().addTeam(teamObj);
-    if (str == 'success') {
-      EasyLoading.dismiss();
-      Navigator.pop(
-        context,
-        true,
-      );
-    } else {
-      ShowDialogMessage.dialogShow(
-        context,
-        str,
-        "Message",
-      );
-    }
   }
 }
