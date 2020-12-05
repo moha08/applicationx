@@ -4,12 +4,12 @@ import 'package:applicationx/login_screen.dart';
 import 'package:applicationx/team_screen.dart';
 import 'package:image_picker/image_picker.dart';
 
-class AddteamPage extends StatefulWidget {
+class EditteamPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => new _State();
 }
 
-class _State extends State<AddteamPage> {
+class _State extends State<EditteamPage> {
   File _image;
   TextEditingController nameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -65,81 +65,11 @@ class _State extends State<AddteamPage> {
         });
   }
 
-  void myAlert1() {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            title: Text(
-              'Send an Invitation By:',
-              style: TextStyle(
-                color: Colors.green,
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-              ),
-            ),
-            content: Container(
-              height: MediaQuery.of(context).size.height / 6,
-              child: Column(
-                children: <Widget>[
-                  FlatButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Row(
-                      children: <Widget>[
-                        Image(
-                          image: AssetImage("lib/images/Email.jpeg"),
-                          height: 40,
-                          width: 40,
-                        ),
-                        Text(
-                          'Email',
-                          style: TextStyle(
-                            color: Colors.blueGrey,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 17,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  FlatButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Row(
-                      children: <Widget>[
-                        Image(
-                          image: AssetImage("lib/images/WhatsApp.jpeg"),
-                          height: 40,
-                          width: 40,
-                        ),
-                        Text(
-                          'WhatsApp',
-                          style: TextStyle(
-                            color: Colors.blueGrey,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 17,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('New Team'),
+        title: Text('Edit Team'),
       ),
       body: Padding(
         padding: EdgeInsets.all(50),
@@ -306,7 +236,10 @@ class _State extends State<AddteamPage> {
                     ),
                   ),
                   onPressed: () {
-                    myAlert1();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginPage()),
+                    );
                   },
                 )),
             Container(
