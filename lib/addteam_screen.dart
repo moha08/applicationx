@@ -1,8 +1,12 @@
 import 'dart:io';
+import 'show_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:applicationx/login_screen.dart';
 import 'package:applicationx/team_screen.dart';
 import 'package:image_picker/image_picker.dart';
+import './backend/teams.dart';
+import './beans/team.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class AddteamPage extends StatefulWidget {
   @override
@@ -11,14 +15,32 @@ class AddteamPage extends StatefulWidget {
 
 class _State extends State<AddteamPage> {
   File _image;
+  var picker = ImagePicker();
   TextEditingController nameController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+  TextEditingController descController = TextEditingController();
   int _value = 1;
 
-  Future getImage(ImageSource media) async {
-    var img = await ImagePicker.pickImage(source: media);
+  @override
+  void dispose() {
+    super.dispose();
+    _image = null;
+    picker = null;
+  }
+
+  Future getImage(String source) async {
+    PickedFile pickedFile;
+
+    if (source == 'From Gallery') {
+      pickedFile = await picker.getImage(source: ImageSource.gallery);
+    } else {
+      pickedFile = await picker.getImage(source: ImageSource.camera);
+    }
     setState(() {
-      _image = img;
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      } else {
+        print('No image selected.');
+      }
     });
   }
 
@@ -37,7 +59,7 @@ class _State extends State<AddteamPage> {
                   FlatButton(
                     onPressed: () {
                       Navigator.pop(context);
-                      getImage(ImageSource.gallery);
+                      getImage('From Gallery');
                     },
                     child: Row(
                       children: <Widget>[
@@ -49,7 +71,7 @@ class _State extends State<AddteamPage> {
                   FlatButton(
                     onPressed: () {
                       Navigator.pop(context);
-                      getImage(ImageSource.camera);
+                      getImage('From Camera');
                     },
                     child: Row(
                       children: <Widget>[
@@ -111,7 +133,7 @@ class _State extends State<AddteamPage> {
               child: TextField(
                 obscureText: false,
                 maxLines: 5,
-                //controller: nameController,
+                controller: descController,
                 decoration: InputDecoration(
                   hintText: 'Please enter description',
                   //suffixIcon: Icon(Icons.contact_page),
@@ -130,41 +152,55 @@ class _State extends State<AddteamPage> {
             Container(
               padding: EdgeInsets.all(10),
               //color: Colors.orangeAccent,
-              child: DropdownButton(
-                  dropdownColor: Colors.green[50],
-                  // elevation: 8,
-                  isExpanded: true,
-                  value: _value,
-                  items: [
-                    DropdownMenuItem(
-                      child: Text(
-                        'Select Team Type',
-                        style: TextStyle(fontSize: 17, color: Colors.green),
-                        //  fontWeight: FontWeight.bold),
-                        // textAlign: TextAlign.center,
-                      ),
-                      value: 1,
-                    ),
-                    DropdownMenuItem(
-                      child: Text(
-                        'Company',
-                        style: TextStyle(fontSize: 17),
-                      ),
-                      value: 2,
-                    ),
-                    DropdownMenuItem(
-                      child: Text(
-                        'Friends',
-                        style: TextStyle(fontSize: 17),
-                      ),
-                      value: 3,
-                    ),
-                  ],
-                  onChanged: (value) {
-                    setState(() {
-                      _value = value;
-                    });
-                  }),
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.green),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(8),
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(4),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton(
+                        dropdownColor: Colors.green[50],
+                        // elevation: 8,
+                        isExpanded: true,
+                        value: _value,
+                        items: [
+                          DropdownMenuItem(
+                            child: Text(
+                              'Select Team Type',
+                              style: TextStyle(fontSize: 17),
+                              //  fontWeight: FontWeight.bold),
+                              // textAlign: TextAlign.center,
+                            ),
+                            value: 1,
+                          ),
+                          DropdownMenuItem(
+                            child: Text(
+                              'Company',
+                              style: TextStyle(fontSize: 17),
+                            ),
+                            value: 2,
+                          ),
+                          DropdownMenuItem(
+                            child: Text(
+                              'Friends',
+                              style: TextStyle(fontSize: 17),
+                            ),
+                            value: 3,
+                          ),
+                        ],
+                        onChanged: (value) {
+                          setState(() {
+                            _value = value;
+                          });
+                        }),
+                  ),
+                ),
+              ),
             ),
             Container(
               child: Text(
@@ -238,16 +274,36 @@ class _State extends State<AddteamPage> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  onPressed: () {
-                    Navigator.pop(
-                      context,
-                      MaterialPageRoute(builder: (context) => TeamPage()),
-                    );
-                  },
+                  onPressed: () => getData(),
                 )),
           ],
         ),
       ),
     );
+  }
+
+  void getData() async {
+    EasyLoading.show(
+      status: 'loading...',
+    );
+    Team teamObj = Team(
+        name: nameController.text,
+        desc: descController.text,
+        type: _value,
+        image: _image);
+    String str = await Teams().addTeam(teamObj);
+    if (str == 'success') {
+      EasyLoading.dismiss();
+      Navigator.pop(
+        context,
+        true,
+      );
+    } else {
+      ShowDialogMessage.dialogShow(
+        context,
+        str,
+        "Message",
+      );
+    }
   }
 }
