@@ -1,8 +1,12 @@
 import 'dart:io';
-import 'package:flutter/material.dart';
-import 'package:applicationx/login_screen.dart';
 import 'package:applicationx/team_screen.dart';
+
+import 'show_dialog.dart';
+import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import './backend/teams.dart';
+import './beans/team.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class AddteamPage extends StatefulWidget {
   @override
@@ -11,14 +15,31 @@ class AddteamPage extends StatefulWidget {
 
 class _State extends State<AddteamPage> {
   File _image;
+  var picker = ImagePicker();
   TextEditingController nameController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  int _value = 1;
+  TextEditingController descController = TextEditingController();
 
-  Future getImage(ImageSource media) async {
-    var img = await ImagePicker.pickImage(source: media);
+  int _value = 1;
+  @override
+  void dispose() {
+    super.dispose();
+    _image = null;
+    picker = null;
+  }
+
+  Future getImage(String source) async {
+    PickedFile pickedFile;
+    if (source == 'From Gallery') {
+      pickedFile = await picker.getImage(source: ImageSource.gallery);
+    } else {
+      pickedFile = await picker.getImage(source: ImageSource.camera);
+    }
     setState(() {
-      _image = img;
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      } else {
+        print('No image selected.');
+      }
     });
   }
 
@@ -37,7 +58,7 @@ class _State extends State<AddteamPage> {
                   FlatButton(
                     onPressed: () {
                       Navigator.pop(context);
-                      getImage(ImageSource.gallery);
+                      getImage('From Gallery');
                     },
                     child: Row(
                       children: <Widget>[
@@ -49,7 +70,7 @@ class _State extends State<AddteamPage> {
                   FlatButton(
                     onPressed: () {
                       Navigator.pop(context);
-                      getImage(ImageSource.camera);
+                      getImage('From Camera');
                     },
                     child: Row(
                       children: <Widget>[
@@ -181,7 +202,7 @@ class _State extends State<AddteamPage> {
               child: TextField(
                 obscureText: false,
                 maxLines: 5,
-                //controller: nameController,
+                controller: descController,
                 decoration: InputDecoration(
                   hintText: 'Please enter description',
                   //suffixIcon: Icon(Icons.contact_page),
@@ -322,16 +343,38 @@ class _State extends State<AddteamPage> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  onPressed: () {
-                    Navigator.pop(
-                      context,
-                      MaterialPageRoute(builder: (context) => TeamPage()),
-                    );
-                  },
+                  onPressed: getData,
                 )),
           ],
         ),
       ),
     );
+  }
+
+  Future getData() async {
+    EasyLoading.show(
+      status: 'loading...',
+    );
+    Team teamObj = Team.imageFile(
+        name: nameController.text,
+        desc: descController.text,
+        type: _value,
+        image: _image);
+    String str = await Teams().addTeam(teamObj);
+    if (str == 'success') {
+      EasyLoading.dismiss();
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => TeamPage()),
+      ).then((value) {
+        setState(() {});
+      });
+    } else {
+      ShowDialogMessage.dialogShow(
+        context,
+        str,
+        "Message",
+      );
+    }
   }
 }

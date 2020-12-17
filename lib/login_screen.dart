@@ -201,7 +201,7 @@ class _State extends State<LoginPage> {
     }
 
     if (signInStatus == 'success') {
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => HomePage()),
       ).then((value) {

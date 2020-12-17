@@ -1,7 +1,10 @@
 import 'package:applicationx/viewteam_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'item.dart';
+import 'backend/teams.dart';
+import 'beans/team.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_share_me/flutter_share_me.dart';
 
 class TeamlistPage extends StatefulWidget {
   @override
@@ -11,15 +14,16 @@ class TeamlistPage extends StatefulWidget {
 class _TeamlistPageState extends State<TeamlistPage> {
   SlidableController slidableController;
 
-  final List<Item> items = List.generate(
-    6,
-    (i) => Item(
-      i,
-      'Team Name $i',
-      'No. of Players $i',
-      Colors.pink,
-    ),
-  );
+  bool _isLoaded = false;
+
+  List<Team> items = List<Team>();
+
+  Future getTeamList() async {
+    items = await Teams().getTeams();
+    setState(() {
+      _isLoaded = true;
+    });
+  }
 
   @protected
   void initState() {
@@ -27,6 +31,11 @@ class _TeamlistPageState extends State<TeamlistPage> {
       onSlideAnimationChanged: handleSlideAnimationChanged,
       onSlideIsOpenChanged: handleSlideIsOpenChanged,
     );
+    print(_isLoaded);
+    setState(() {
+      getTeamList();
+    });
+
     super.initState();
   }
 
@@ -45,7 +54,7 @@ class _TeamlistPageState extends State<TeamlistPage> {
     });
   }
 
-  void myAlert1() {
+  void myAlert1(String teamCode) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -92,10 +101,18 @@ class _TeamlistPageState extends State<TeamlistPage> {
                     },
                     child: Row(
                       children: <Widget>[
-                        Image(
-                          image: AssetImage("lib/images/WhatsApp.jpeg"),
-                          height: 40,
-                          width: 40,
+                        FlatButton(
+                          splashColor: Colors.white,
+                          onPressed: () {
+                            print(teamCode);
+                            FlutterShareMe().shareToWhatsApp(
+                                msg: "The team Code is $teamCode}");
+                          },
+                          child: Image(
+                            image: AssetImage("lib/images/WhatsApp.jpeg"),
+                            height: 40,
+                            width: 40,
+                          ),
                         ),
                         Text(
                           'WhatsApp',
@@ -117,17 +134,28 @@ class _TeamlistPageState extends State<TeamlistPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: OrientationBuilder(
-          builder: (context, orientation) => _buildList(
-              context,
-              orientation == Orientation.portrait
-                  ? Axis.vertical
-                  : Axis.horizontal),
+    print(_isLoaded);
+    if (_isLoaded == false) {
+      EasyLoading.show(
+        status: 'loading...',
+      );
+      return Container(
+        child: null,
+      );
+    } else {
+      EasyLoading.dismiss();
+      return Scaffold(
+        body: Center(
+          child: OrientationBuilder(
+            builder: (context, orientation) => _buildList(
+                context,
+                orientation == Orientation.portrait
+                    ? Axis.vertical
+                    : Axis.horizontal),
+          ),
         ),
-      ),
-    );
+      );
+    }
   }
 
   Widget _buildList(BuildContext context, Axis direction) {
@@ -145,10 +173,10 @@ class _TeamlistPageState extends State<TeamlistPage> {
 
   Widget _getSlidableWithLists(
       BuildContext context, int index, Axis direction) {
-    final Item item = items[index];
+    final Team item = items[index];
     //final int t = index;
     return Slidable(
-      key: Key(item.title),
+      key: Key(item.name),
       controller: slidableController,
       direction: direction,
       dismissal: SlidableDismissal(
@@ -164,7 +192,7 @@ class _TeamlistPageState extends State<TeamlistPage> {
           });
         },
       ),
-      actionPane: _getActionPane(item.index),
+      actionPane: _getActionPane(index),
       actionExtentRatio: 0.25,
       child: direction == Axis.horizontal
           ? VerticalListItem(items[index])
@@ -175,14 +203,15 @@ class _TeamlistPageState extends State<TeamlistPage> {
             color: Colors.pink,
             icon: Icons.view_list,
             onTap: () {
+              print(item.docID);
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => ViewteamPage()),
+                MaterialPageRoute(
+                    builder: (context) => ViewteamPage(
+                          team: item,
+                        )),
               );
             }),
-
-        //_showSnackBar(context, 'View')
-
         IconSlideAction(
           caption: 'Edit',
           color: Colors.green,
@@ -196,7 +225,7 @@ class _TeamlistPageState extends State<TeamlistPage> {
             color: Colors.green,
             icon: Icons.assignment_ind,
             onTap: () {
-              myAlert1();
+              myAlert1(item.teamCode);
             }),
         IconSlideAction(
           caption: 'Delete',
@@ -233,7 +262,7 @@ class _TeamlistPageState extends State<TeamlistPage> {
 
 class HorizontalListItem extends StatelessWidget {
   HorizontalListItem(this.item);
-  final Item item;
+  final Team item;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -244,15 +273,15 @@ class HorizontalListItem extends StatelessWidget {
         children: <Widget>[
           Expanded(
             child: CircleAvatar(
-              backgroundColor: item.color,
-              child: Text('${item.index}'),
+              backgroundColor: Colors.red,
+              child: Text('${item.name}'),
               foregroundColor: Colors.white,
             ),
           ),
           Expanded(
             child: Center(
               child: Text(
-                item.subtitle,
+                item.desc,
               ),
             ),
           ),
@@ -264,7 +293,7 @@ class HorizontalListItem extends StatelessWidget {
 
 class VerticalListItem extends StatelessWidget {
   VerticalListItem(this.item);
-  final Item item;
+  final Team item;
 
   @override
   Widget build(BuildContext context) {
@@ -277,12 +306,10 @@ class VerticalListItem extends StatelessWidget {
         color: Colors.white,
         child: ListTile(
           leading: CircleAvatar(
-            backgroundColor: item.color,
-            child: Text('${item.index}'),
-            foregroundColor: Colors.white,
+            backgroundImage: NetworkImage(item.imageLink),
           ),
-          title: Text(item.title),
-          subtitle: Text(item.subtitle),
+          title: Text(item.name),
+          subtitle: Text(item.desc),
         ),
       ),
     );

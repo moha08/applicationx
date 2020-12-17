@@ -2,12 +2,18 @@ import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
 
+import 'beans/team.dart';
+
 class ViewteamPage extends StatefulWidget {
+  Team team;
+  ViewteamPage({this.team});
   @override
-  State<StatefulWidget> createState() => new _State();
+  State<StatefulWidget> createState() => new _State(team: team);
 }
 
 class _State extends State<ViewteamPage> {
+  Team team;
+  _State({this.team});
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -31,7 +37,13 @@ class _State extends State<ViewteamPage> {
         ),
         body: TabBarView(
           children: [
-            Center(child: TeamData()),
+            Center(
+              child: TeamData(
+                teamName: team.name,
+                imageLink: team.imageLink,
+                teamType: team.type == 2 ? "Company" : "Friends",
+              ),
+            ),
             Center(child: PlayerData()),
           ],
         ),
@@ -41,6 +53,14 @@ class _State extends State<ViewteamPage> {
 }
 
 class TeamData extends StatelessWidget {
+  String teamName;
+  String imageLink;
+  String teamType;
+  TeamData({
+    this.teamName,
+    this.imageLink,
+    this.teamType,
+  });
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -61,42 +81,78 @@ class TeamData extends StatelessWidget {
         Container(
           padding: EdgeInsets.fromLTRB(10, 0, 10, 20),
           child: Image(
-            image: AssetImage("lib/images/team.png"),
+            image: NetworkImage(imageLink),
             width: 150,
             height: 150,
           ),
         ),
         Container(
           padding: EdgeInsets.all(30),
-          child: Text(
-            'Team Name:',
-            style: TextStyle(
-              color: Colors.green,
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-            ),
+          child: Row(
+            children: [
+              Text(
+                'Team Name: ',
+                style: TextStyle(
+                  color: Colors.green,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+              ),
+              Text(
+                teamName,
+                style: TextStyle(
+                  color: Colors.green,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+              )
+            ],
           ),
         ),
         Container(
           padding: EdgeInsets.all(30),
-          child: Text(
-            'Team Type:',
-            style: TextStyle(
-              color: Colors.green,
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-            ),
+          child: Row(
+            children: [
+              Text(
+                'Team Type: ',
+                style: TextStyle(
+                  color: Colors.green,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+              ),
+              Text(
+                teamType,
+                style: TextStyle(
+                  color: Colors.green,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+              )
+            ],
           ),
         ),
         Container(
           padding: EdgeInsets.all(30),
-          child: Text(
-            'Number of Players:',
-            style: TextStyle(
-              color: Colors.green,
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-            ),
+          child: Row(
+            children: [
+              Text(
+                'Number of Players:',
+                style: TextStyle(
+                  color: Colors.green,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+              ),
+              Text(
+                10.toString(),
+                style: TextStyle(
+                  color: Colors.green,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+              )
+            ],
           ),
         ),
       ]),
