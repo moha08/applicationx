@@ -1,4 +1,5 @@
 import 'package:applicationx/addevent_screen.dart';
+import 'package:applicationx/viewevent_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
@@ -20,7 +21,7 @@ class _EventPageState extends State<EventPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: const Text('Events List'), backgroundColor: Colors.green),
+          title: const Text('EVENTS LIST'), backgroundColor: Colors.green),
       body: SfCalendar(
         view: CalendarView.month,
         allowViewNavigation: true,
@@ -74,10 +75,15 @@ class _EventPageState extends State<EventPage> {
 
   void calendarTapped(CalendarTapDetails calendarTapDetails) {
     if (calendarTapDetails.targetElement == CalendarElement.appointment) {
-      print("appoitment");
+      print("appointent");
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => VieweventPage()),
+      );
     } else if (calendarTapDetails.targetElement ==
         CalendarElement.calendarCell) {
-      print("cell");
+      print("cll");
     }
   }
 }

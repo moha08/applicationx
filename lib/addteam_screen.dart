@@ -342,6 +342,11 @@ class _State extends State<AddteamPage> {
                 height: 80,
                 padding: EdgeInsets.fromLTRB(5, 20, 5, 0),
                 child: RaisedButton.icon(
+                  color: Colors.green,
+                  icon: Icon(
+                    Icons.save,
+                    color: Colors.white,
+                  ),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10.0))),
                   label: Text(
