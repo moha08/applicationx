@@ -22,12 +22,12 @@ class _State extends State<ViewteamPage> {
             tabs: [
               Tab(
                 icon: Icon(Icons.perm_device_information),
-                text: "Information",
+                text: "INFORMATION",
               ),
-              Tab(icon: Icon(Icons.contacts), text: "Players"),
+              Tab(icon: Icon(Icons.contacts), text: "PLAYERS"),
             ],
           ),
-          title: Text('View Team'),
+          title: Text('VIEW TEAM'),
         ),
         body: TabBarView(
           children: [
@@ -146,6 +146,7 @@ class PlayerData extends StatelessWidget {
               DataCell(Text('Defender')),
               DataCell(
                 IconButton(
+                  onPressed: null,
                   padding: EdgeInsets.fromLTRB(0, 0, 20, 0),
                   icon: Icon(Icons.delete),
                   tooltip: 'Delete',
@@ -162,6 +163,7 @@ class PlayerData extends StatelessWidget {
               DataCell(
                 IconButton(
                   padding: EdgeInsets.fromLTRB(0, 0, 20, 0),
+                  onPressed: null,
                   icon: Icon(Icons.delete),
                   tooltip: 'Delete',
                   //  onPressed: () {

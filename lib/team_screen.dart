@@ -9,7 +9,7 @@ class TeamPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-            title: const Text('Teams List'), backgroundColor: Colors.green),
+            title: const Text('TEAMS LIST'), backgroundColor: Colors.green),
         body: count == 0 ? NoTeamsWidget(count: count) : TeamlistPage(),
         floatingActionButton: FloatingActionButton(
             child: Icon(Icons.add),

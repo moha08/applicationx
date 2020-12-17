@@ -181,10 +181,17 @@ class _State extends State<SignupPage> {
                 Container(
                     height: 80,
                     padding: EdgeInsets.fromLTRB(5, 20, 5, 0),
-                    child: RaisedButton(
+                    child: RaisedButton.icon(
+                      shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(10.0))),
+                      icon: Icon(
+                        Icons.logout,
+                        color: Colors.white,
+                      ),
                       textColor: Colors.white,
                       color: Colors.green,
-                      child: Text(
+                      label: Text(
                         StringEnum.SIGN_UP_TEXT,
                         style: TextStyle(
                           fontSize: 20,
