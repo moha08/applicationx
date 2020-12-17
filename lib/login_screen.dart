@@ -123,14 +123,22 @@ class _State extends State<LoginPage> {
                 Container(
                     height: 60,
                     padding: EdgeInsets.fromLTRB(5, 0, 5, 5),
-                    child: RaisedButton(
+                    child: RaisedButton.icon(
+                      shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(10.0))),
+                      icon: Icon(
+                        Icons.login,
+                        color: Colors.white,
+                      ),
                       textColor: Colors.white,
                       color: Colors.green,
-                      child: Text(
+                      label: Text(
                         StringEnum.LOGIN_TEXT,
                         style: TextStyle(
-                          fontSize: 20,
+                          color: Colors.white,
                           fontWeight: FontWeight.bold,
+                          fontSize: 20,
                         ),
                       ),
                       onPressed: loginFun,

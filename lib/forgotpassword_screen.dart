@@ -50,10 +50,17 @@ class _State extends State<ForgotpasswordPage> {
                 Container(
                     height: 80,
                     padding: EdgeInsets.fromLTRB(5, 20, 5, 0),
-                    child: RaisedButton(
+                    child: RaisedButton.icon(
+                      shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(10.0))),
+                      icon: Icon(
+                        Icons.send_to_mobile,
+                        color: Colors.white,
+                      ),
                       textColor: Colors.white,
                       color: Colors.green,
-                      child: Text(
+                      label: Text(
                         StringEnum.SEND_BUTTON_TEXT,
                         style: TextStyle(
                           fontSize: 20,

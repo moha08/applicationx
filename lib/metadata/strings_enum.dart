@@ -9,7 +9,7 @@ class StringEnum {
   static const String PASSWORD_CONFIRM_LABEL_TEXT = 'Confirm Password';
   static const String MOBILE_HINT_TEXT = 'Please enter a mobile number';
   static const String MOBILE_LABEL_TEXT = 'Password';
-  static const String FORGOT_PASSWORD_TEXT = 'Forgot Password?';
+  static const String FORGOT_PASSWORD_TEXT = 'FORGOT PASSWORD?';
   static const String LOGIN_TEXT = 'Login';
   static const String ACCOUNT_QUESTION_TEXT = 'Do not have account?';
   static const String SIGN_UP_TEXT = 'Sign Up';

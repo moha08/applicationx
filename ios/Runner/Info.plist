@@ -2,6 +2,15 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+<<<<<<< HEAD
+=======
+	<key>NSCalendarsUsageDescription</key>
+	<string>Integrate with calnedar to add team events</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Take  image to use on Team image</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Upload image to use on Team image</string>
+>>>>>>> 68f13ede4879560492569357b526c972dd0d70b8
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>

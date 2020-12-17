@@ -160,7 +160,7 @@ class _State extends State<AddteamPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('New Team'),
+        title: Text('NEW TEAM'),
       ),
       body: Padding(
         padding: EdgeInsets.all(50),
@@ -316,16 +316,24 @@ class _State extends State<AddteamPage> {
             Container(
                 height: 80,
                 padding: EdgeInsets.fromLTRB(5, 20, 5, 0),
-                child: RaisedButton(
-                  textColor: Colors.white,
-                  color: Colors.green,
-                  child: Text(
+                child: RaisedButton.icon(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                  label: Text(
                     'Assign Players',
                     style: TextStyle(
-                      fontSize: 20,
+                      color: Colors.white,
                       fontWeight: FontWeight.bold,
+                      fontSize: 20,
                     ),
                   ),
+                  icon: Icon(
+                    Icons.person,
+                    color: Colors.white,
+                  ),
+                  textColor: Colors.white,
+                  splashColor: Colors.red,
+                  color: Colors.green,
                   onPressed: () {
                     myAlert1();
                   },
@@ -333,14 +341,15 @@ class _State extends State<AddteamPage> {
             Container(
                 height: 80,
                 padding: EdgeInsets.fromLTRB(5, 20, 5, 0),
-                child: RaisedButton(
-                  textColor: Colors.white,
-                  color: Colors.green,
-                  child: Text(
+                child: RaisedButton.icon(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                  label: Text(
                     'Save',
                     style: TextStyle(
-                      fontSize: 20,
+                      color: Colors.white,
                       fontWeight: FontWeight.bold,
+                      fontSize: 20,
                     ),
                   ),
                   onPressed: getData,
