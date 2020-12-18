@@ -1,10 +1,8 @@
 import 'package:applicationx/event_screen.dart';
+import 'package:applicationx/Eventhome_screen.dart';
 import 'package:button_picker/button_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:applicationx/login_screen.dart';
-import 'package:applicationx/team_screen.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:select_days_week/select_days_week_controller.dart';
@@ -240,6 +238,15 @@ class _State extends State<AddeventPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('NEW EVENT'),
+        actions: <Widget>[
+          new IconButton(
+            icon: new Icon(Icons.close),
+            onPressed: () => Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => EventHomePage()),
+            ),
+          ),
+        ],
       ),
       body: Padding(
         padding: EdgeInsets.all(10),

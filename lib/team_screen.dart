@@ -17,7 +17,7 @@ class _TeamPageState extends State<TeamPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: const Text('Teams List'), backgroundColor: Colors.green),
+          title: const Text('TEAMS LIST'), backgroundColor: Colors.green),
       body: count == 0 ? NoTeamsWidget(count: count) : TeamlistPage(),
       floatingActionButton: SpeedDial(
         // both default to 16
@@ -39,13 +39,13 @@ class _TeamPageState extends State<TeamPage> {
         tooltip: 'Team',
         //heroTag: 'speed-dial-hero-tag',
         backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        foregroundColor: Colors.green,
         elevation: 8.0,
         shape: CircleBorder(),
         children: [
           SpeedDialChild(
               child: Icon(Icons.add),
-              backgroundColor: Colors.red,
+              backgroundColor: Colors.green,
               label: 'Add Team',
               labelStyle: TextStyle(fontSize: 18.0),
               onTap: () {
@@ -55,8 +55,8 @@ class _TeamPageState extends State<TeamPage> {
                 );
               }),
           SpeedDialChild(
-              child: Icon(Icons.mode_edit),
-              backgroundColor: Colors.green,
+              child: Icon(Icons.group_add),
+              backgroundColor: Colors.pink,
               label: 'Join Team',
               labelStyle: TextStyle(fontSize: 18.0),
               onTap: () {
@@ -92,7 +92,7 @@ class NoTeamsWidget extends StatelessWidget {
                 Column(children: <Widget>[
                   Icon(Icons.person_add_disabled, size: 80, color: Colors.grey),
                   Text(
-                    'No Team',
+                    'NO TEAM',
                     style: TextStyle(
                         fontSize: 20,
                         color: Colors.grey,
