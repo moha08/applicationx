@@ -6,15 +6,15 @@ import 'package:applicationx/setting_screen.dart';
 import 'package:applicationx/profile_screen.dart';
 import 'package:ff_navigation_bar/ff_navigation_bar.dart';
 
-class HomePage extends StatefulWidget {
-  HomePage({Key key}) : super(key: key);
+class EventHomePage extends StatefulWidget {
+  EventHomePage({Key key}) : super(key: key);
 
   @override
-  HomePageState createState() => HomePageState();
+  EventHomePageState createState() => EventHomePageState();
 }
 
-class HomePageState extends State<HomePage> {
-  int selectedIndex = 2;
+class EventHomePageState extends State<EventHomePage> {
+  int selectedIndex = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(

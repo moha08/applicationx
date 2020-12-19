@@ -1,3 +1,4 @@
+import 'package:applicationx/teamhome_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import './backend/teams.dart';
@@ -15,7 +16,16 @@ class _JoinTeamState extends State<JoinTeam> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('New Team'),
+          title: Text('JOIN A TEAM'),
+          actions: <Widget>[
+            new IconButton(
+              icon: new Icon(Icons.close),
+              onPressed: () => Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => TeamHomePage()),
+              ),
+            ),
+          ],
         ),
         body: Padding(
           padding: EdgeInsets.all(50),
@@ -42,20 +52,29 @@ class _JoinTeamState extends State<JoinTeam> {
                 ),
               ),
               Container(
-                  height: 80,
-                  padding: EdgeInsets.fromLTRB(5, 20, 5, 0),
-                  child: RaisedButton(
-                    textColor: Colors.white,
-                    color: Colors.green,
-                    child: Text(
-                      'Join Team',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
+                height: 80,
+                padding: EdgeInsets.fromLTRB(5, 20, 5, 0),
+                child: RaisedButton.icon(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                  label: Text(
+                    'Join',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
                     ),
-                    onPressed: joinTeam,
-                  ))
+                  ),
+                  icon: Icon(
+                    Icons.group_add,
+                    color: Colors.white,
+                  ),
+                  textColor: Colors.white,
+                  splashColor: Colors.red,
+                  color: Colors.green,
+                  onPressed: joinTeam,
+                ),
+              ),
             ],
           ),
         ));

@@ -1,6 +1,7 @@
 import 'dart:io';
+import 'package:applicationx/teamhome_screen.dart';
 import 'package:applicationx/team_screen.dart';
-
+import 'package:applicationx/teamlist_screen.dart';
 import 'show_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -161,6 +162,15 @@ class _State extends State<AddteamPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('NEW TEAM'),
+        actions: <Widget>[
+          new IconButton(
+            icon: new Icon(Icons.close),
+            onPressed: () => Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => TeamHomePage()),
+            ),
+          ),
+        ],
       ),
       body: Padding(
         padding: EdgeInsets.all(50),
