@@ -24,7 +24,9 @@ class Teams {
     String team_code = getRandomString(5);
 
     try {
-      Image image = decodeJpg(team.image.readAsBytesSync());
+      Image image = team.image == null
+          ? Image.rgb(100, 100)
+          : decodeJpg(team.image.readAsBytesSync());
       Image thumbnail = copyResize(image, width: 120);
 
       await firebase_storage
@@ -69,14 +71,18 @@ class Teams {
         //.where("user", isEqualTo: userUID)
         .where("group_members", arrayContains: userUID)
         .get();
+
     querySnap.docs.forEach((doc) {
       Team team = Team.url(
-          name: doc["team_name"],
-          desc: doc["team_desc"],
-          type: doc["team_type"],
-          teamCode: doc["team_code"],
-          imageLink: imageUrl,
-          docID: doc.id);
+        name: doc["team_name"],
+        desc: doc["team_desc"],
+        type: doc["team_type"],
+        teamCode: doc["team_code"],
+        imageLink: imageUrl,
+        docID: doc.id,
+        user: doc["user"],
+        isAdmin: (userUID == doc["user"]) ? true : false,
+      );
 
       teams.add(team);
     });
@@ -94,7 +100,9 @@ class Teams {
         //.where("user", isEqualTo: userUID)
         .where("team_code", isEqualTo: teamCode)
         .get();
+    if (querySnap.size == 0) return "wrongID";
     String docID = querySnap.docs[0].id;
+    if (docID == null) return "wrongID";
     List<dynamic> groupMembers = querySnap.docs[0]["group_members"];
     groupMembers.add(userUID);
     await teams

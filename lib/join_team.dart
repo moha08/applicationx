@@ -11,6 +11,7 @@ class JoinTeam extends StatefulWidget {
 }
 
 class _JoinTeamState extends State<JoinTeam> {
+  bool _validate = false;
   TextEditingController teamCodeController = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -38,8 +39,9 @@ class _JoinTeamState extends State<JoinTeam> {
                   controller: teamCodeController,
                   decoration: InputDecoration(
                     hintText: 'Please enter a team code',
-                    //suffixIcon: Icon(Icons.contact_page),
                     hintStyle: TextStyle(color: Colors.grey),
+                    errorText: _validate ? 'Value Can\'t Be Empty' : null,
+                    //suffixIcon: Icon(Icons.contact_page),
                     filled: true,
                     fillColor: Colors.white70,
                     enabledBorder: OutlineInputBorder(
@@ -49,6 +51,11 @@ class _JoinTeamState extends State<JoinTeam> {
                     border: OutlineInputBorder(),
                     labelText: 'Team Code',
                   ),
+                  onChanged: (value) {
+                    setState(() {
+                      _validate = false;
+                    });
+                  },
                 ),
               ),
               Container(
@@ -81,24 +88,38 @@ class _JoinTeamState extends State<JoinTeam> {
   }
 
   Future joinTeam() async {
-    EasyLoading.show(
-      status: 'loading...',
-    );
-    String str = await Teams().joinTeam("rItxR");
-    if (str == 'success') {
-      EasyLoading.dismiss();
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => TeamPage()),
-      ).then((value) {
-        setState(() {});
-      });
-    } else {
-      ShowDialogMessage.dialogShow(
-        context,
-        str,
-        "Message",
+    setState(() {
+      teamCodeController.text.isEmpty ? _validate = true : _validate = false;
+    });
+
+    if (_validate == false) {
+      EasyLoading.show(
+        status: 'loading...',
       );
+      String str = await Teams().joinTeam(teamCodeController.text);
+      if (str == 'success') {
+        EasyLoading.dismiss();
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => TeamPage()),
+        ).then((value) {
+          setState(() {});
+        });
+      } else if (str == "wrongID") {
+        ShowDialogMessage.dialogShow(
+          context,
+          "Please check the Team Code with admin",
+          "Message",
+        );
+        EasyLoading.dismiss();
+      } else {
+        ShowDialogMessage.dialogShow(
+          context,
+          str,
+          "Message",
+        );
+        EasyLoading.dismiss();
+      }
     }
   }
 }
