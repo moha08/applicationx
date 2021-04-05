@@ -28,4 +28,9 @@ class Team {
       this.docID,
       this.user,
       this.isAdmin});
+
+  Team.teamList({
+    this.name,
+    this.docID,
+  });
 }
