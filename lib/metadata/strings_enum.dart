@@ -18,4 +18,11 @@ class StringEnum {
   static const String LOGON_TITLE = 'LOGIN';
   static const String CREATE_NEW_ACCT_TEXT = 'Create New Account';
   static const String SEND_BUTTON_TEXT = 'Send';
+  static const String TEAM_1 = '5 VS 5';
+  static const String TEAM_2 = '6 VS 6';
+  static const String TEAM_3 = '7 VS 7';
+  static const String TEAM_4 = '8 VS 8';
+  static const String TEAM_5 = '9 VS 9';
+  static const String TEAM_6 = '10 VS 10';
+  static const String TEAM_7 = '11 VS 11';
 }

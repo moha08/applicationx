@@ -670,6 +670,7 @@ class _State extends State<AddeventPage> {
             items: snapshot.data,
             onChanged: (value) {
               setState(() {
+                print(value);
                 _team = value;
               });
             },

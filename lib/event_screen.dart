@@ -98,11 +98,9 @@ class _EventPageState extends State<EventPage> {
     if (calendarTapDetails.targetElement == CalendarElement.appointment) {
       Meeting app = calendarTapDetails.appointments[0];
 
-      print(app.eventName);
-
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => VieweventPage()),
+        MaterialPageRoute(builder: (context) => VieweventPage(app.eventName)),
       );
     } else if (calendarTapDetails.targetElement ==
         CalendarElement.calendarCell) {

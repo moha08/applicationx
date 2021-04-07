@@ -114,4 +114,21 @@ class Teams {
 
     return joinTeamResult;
   }
+
+  Future<String> getTeamByCode(String teamCode) async {
+    var userUID = _firebaseAuth.currentUser.uid;
+    String teamName = "";
+
+    CollectionReference teams = FirebaseFirestore.instance.collection('teams');
+    QuerySnapshot querySnap = await FirebaseFirestore.instance
+        .collection("teams")
+        //.where("user", isEqualTo: userUID)
+        .where("team_code", isEqualTo: teamCode)
+        .get();
+    if (querySnap.size == 0) return "wrongID";
+    teamName = querySnap.docs[0]["team_name"];
+    if (teamName == null) return "wrongID";
+
+    return teamName;
+  }
 }

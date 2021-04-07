@@ -8,7 +8,9 @@ class Event {
   List days;
   String locationName;
   String teamCode;
+  String teamName;
   double closeEvent;
+  String fullDateTime;
 
   Event(
       {this.name,
@@ -26,4 +28,11 @@ class Event {
     this.startTime,
     this.endTime,
   });
+
+  Event.getByName(
+      {this.name,
+      this.teamSize,
+      this.teamName,
+      this.fullDateTime,
+      this.locationName});
 }
