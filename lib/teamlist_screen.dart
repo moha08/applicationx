@@ -77,6 +77,7 @@ class _TeamlistPageState extends State<TeamlistPage> {
                     onPressed: () {
                       Navigator.pop(context);
                     },
+                    padding: EdgeInsets.fromLTRB(40, 10, 50, 10),
                     child: Row(
                       children: <Widget>[
                         Image(
@@ -85,7 +86,8 @@ class _TeamlistPageState extends State<TeamlistPage> {
                           width: 40,
                         ),
                         Text(
-                          'Email',
+                          '     Email',
+                          textAlign: TextAlign.right,
                           style: TextStyle(
                             color: Colors.blueGrey,
                             fontWeight: FontWeight.bold,
@@ -116,6 +118,7 @@ class _TeamlistPageState extends State<TeamlistPage> {
                         ),
                         Text(
                           'WhatsApp',
+                          textAlign: TextAlign.right,
                           style: TextStyle(
                             color: Colors.blueGrey,
                             fontWeight: FontWeight.bold,

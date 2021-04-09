@@ -285,6 +285,7 @@ class _State extends State<AddteamPage> {
               ),
             ),
             Container(
+              padding: EdgeInsets.fromLTRB(10, 20, 10, 20),
               child: Text(
                 'Upload Team Profile',
                 style: TextStyle(fontSize: 17, color: Colors.blueGrey[500]),
@@ -325,32 +326,7 @@ class _State extends State<AddteamPage> {
             ),
             Container(
                 height: 80,
-                padding: EdgeInsets.fromLTRB(5, 20, 5, 0),
-                child: RaisedButton.icon(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                  label: Text(
-                    'Assign Players',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    ),
-                  ),
-                  icon: Icon(
-                    Icons.person,
-                    color: Colors.white,
-                  ),
-                  textColor: Colors.white,
-                  splashColor: Colors.red,
-                  color: Colors.green,
-                  onPressed: () {
-                    myAlert1();
-                  },
-                )),
-            Container(
-                height: 80,
-                padding: EdgeInsets.fromLTRB(5, 20, 5, 0),
+                padding: EdgeInsets.fromLTRB(10, 20, 10, 0),
                 child: RaisedButton.icon(
                   color: Colors.green,
                   icon: Icon(
