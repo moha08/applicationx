@@ -89,6 +89,7 @@ Sports Arte Team'''
                           });
                       launch(_emailLaunchUri.toString());
                     },
+                    padding: EdgeInsets.fromLTRB(40, 10, 50, 10),
                     child: Row(
                       children: <Widget>[
                         Image(
@@ -97,7 +98,8 @@ Sports Arte Team'''
                           width: 40,
                         ),
                         Text(
-                          'Email',
+                          '     Email',
+                          textAlign: TextAlign.right,
                           style: TextStyle(
                             color: Colors.blueGrey,
                             fontWeight: FontWeight.bold,
@@ -132,6 +134,7 @@ Sports Arte Team''');
                         ),
                         Text(
                           'WhatsApp',
+                          textAlign: TextAlign.right,
                           style: TextStyle(
                             color: Colors.blueGrey,
                             fontWeight: FontWeight.bold,
