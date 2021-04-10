@@ -2,6 +2,8 @@ import 'package:applicationx/addevent_screen.dart';
 import 'package:applicationx/viewevent_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
+import 'beans/event.dart';
+import 'backend/events.dart';
 
 /// The hove page which hosts the calendar
 class EventPage extends StatefulWidget {
@@ -15,35 +17,14 @@ class EventPage extends StatefulWidget {
 }
 
 class _EventPageState extends State<EventPage> {
-  List<Meeting> meetings;
+  List<Event> events_list;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
           title: const Text('EVENTS LIST'), backgroundColor: Colors.green),
-      body: SfCalendar(
-        view: CalendarView.month,
-        allowViewNavigation: true,
-        todayHighlightColor: Colors.pink,
-        cellBorderColor: Colors.green,
-        showNavigationArrow: true,
-        monthViewSettings: MonthViewSettings(
-            showAgenda: true,
-            appointmentDisplayCount: 4,
-            showTrailingAndLeadingDates: true,
-            agendaViewHeight: 400,
-            agendaItemHeight: 75,
-            numberOfWeeksInView: 5),
-        dataSource: MeetingDataSource(_getDataSource()),
-        onTap: calendarTapped,
-        onLongPress: null, //delete event
-        // by default the month appointment display mode set as Indicator, we can
-        // change the display mode as appointment using the appointment display
-        // mode property
-        // monthViewSettings: MonthViewSettings(
-        //  appointmentDisplayMode: MonthAppointmentDisplayMode.appointment),
-      ),
+      body: getData(),
       floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
           onPressed: () {
@@ -55,31 +36,71 @@ class _EventPageState extends State<EventPage> {
     );
   }
 
-  List<Meeting> _getDataSource() {
-    meetings = <Meeting>[];
-    final DateTime today = DateTime.now();
-    final DateTime startTime =
-        DateTime(today.year, today.month, today.day, 9, 0, 0);
-    final DateTime endTime = startTime.add(const Duration(hours: 2));
+  Future<List<Meeting>> _getDataSource() async {
+    List<Event> events_list = await Events().getEvents();
 
-    meetings.add(Meeting(Icons.ac_unit_sharp, 'New Event', startTime, endTime,
-        const Color(0xFF4CAF50), false));
-    meetings.add(Meeting(Icons.ac_unit_sharp, 'New Event', startTime, endTime,
-        const Color(0xFFE91E63), false));
-    meetings.add(Meeting(Icons.ac_unit_sharp, 'New Event', startTime, endTime,
-        const Color(0xFF9C27B0), false));
-    meetings.add(Meeting(Icons.ac_unit_sharp, 'New Event', startTime, endTime,
-        const Color(0xFFE91111), false));
-    return meetings;
+    List<Meeting> finalList = [];
+    for (Event event in events_list) {
+      String todayStr = event.date;
+      String startTimeStr = event.startTime;
+      String endTimeStr = event.endTime;
+      DateTime todayDate = DateTime.parse(todayStr);
+      DateTime startTime = todayDate
+          .add(new Duration(hours: int.parse(startTimeStr.substring(0, 2))));
+      DateTime endTime = todayDate
+          .add(new Duration(hours: int.parse(endTimeStr.substring(0, 2))));
+      finalList.add(Meeting(Icons.ac_unit_sharp, event.name, startTime, endTime,
+          const Color(0xFF4CAF50), false));
+    }
+
+    return finalList;
+  }
+
+  Widget getData() {
+    return FutureBuilder<List<Meeting>>(
+        future: _getDataSource(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState != ConnectionState.done) {
+            // return: show loading widget
+
+            print(snapshot.data.toString());
+          }
+          if (snapshot.hasError) {
+            // return: show error widget
+          }
+
+          return SfCalendar(
+            view: CalendarView.month,
+            allowViewNavigation: true,
+            todayHighlightColor: Colors.pink,
+            cellBorderColor: Colors.green,
+            showNavigationArrow: true,
+            monthViewSettings: MonthViewSettings(
+                showAgenda: true,
+                appointmentDisplayCount: 4,
+                showTrailingAndLeadingDates: true,
+                agendaViewHeight: 400,
+                agendaItemHeight: 75,
+                numberOfWeeksInView: 4),
+            dataSource: MeetingDataSource(snapshot.data),
+            onTap: calendarTapped,
+            onLongPress: null, //delete event
+            // by default the month appointment display mode set as Indicator, we can
+            // change the display mode as appointment using the appointment display
+            // mode property
+            // monthViewSettings: MonthViewSettings(
+            //  appointmentDisplayMode: MonthAppointmentDisplayMode.appointment),
+          );
+        });
   }
 
   void calendarTapped(CalendarTapDetails calendarTapDetails) {
     if (calendarTapDetails.targetElement == CalendarElement.appointment) {
-      print("appointent");
+      Meeting app = calendarTapDetails.appointments[0];
 
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => VieweventPage()),
+        MaterialPageRoute(builder: (context) => VieweventPage(app.eventName)),
       );
     } else if (calendarTapDetails.targetElement ==
         CalendarElement.calendarCell) {

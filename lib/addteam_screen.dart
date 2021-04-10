@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:applicationx/teamhome_screen.dart';
 import 'package:applicationx/team_screen.dart';
-import 'package:applicationx/teamlist_screen.dart';
 import 'show_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -17,6 +16,9 @@ class AddteamPage extends StatefulWidget {
 class _State extends State<AddteamPage> {
   File _image;
   var picker = ImagePicker();
+  bool _validate = false;
+  bool _validateName = false;
+  bool _validateDesc = false;
   TextEditingController nameController = TextEditingController();
   TextEditingController descController = TextEditingController();
 
@@ -39,7 +41,11 @@ class _State extends State<AddteamPage> {
       if (pickedFile != null) {
         _image = File(pickedFile.path);
       } else {
-        print('No image selected.');
+        ShowDialogMessage.dialogShow(
+          context,
+          "Please select Image",
+          "Message",
+        );
       }
     });
   }
@@ -194,6 +200,7 @@ class _State extends State<AddteamPage> {
                 controller: nameController,
                 decoration: InputDecoration(
                   hintText: 'Please enter a team name',
+                  errorText: _validateName ? 'Value Can\'t Be Empty' : null,
                   //suffixIcon: Icon(Icons.contact_page),
                   hintStyle: TextStyle(color: Colors.grey),
                   filled: true,
@@ -205,28 +212,39 @@ class _State extends State<AddteamPage> {
                   border: OutlineInputBorder(),
                   labelText: 'Team Name',
                 ),
+                onChanged: (value) {
+                  setState(() {
+                    _validateName = false;
+                  });
+                },
               ),
             ),
             Container(
               padding: EdgeInsets.all(10),
               child: TextField(
-                obscureText: false,
-                maxLines: 5,
-                controller: descController,
-                decoration: InputDecoration(
-                  hintText: 'Please enter description',
-                  //suffixIcon: Icon(Icons.contact_page),
-                  hintStyle: TextStyle(color: Colors.grey),
-                  filled: true,
-                  fillColor: Colors.white70,
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(12.0)),
-                    borderSide: BorderSide(color: Colors.green, width: 2),
+                  obscureText: false,
+                  maxLines: 5,
+                  controller: descController,
+                  decoration: InputDecoration(
+                    hintText: 'Please enter description',
+                    //suffixIcon: Icon(Icons.contact_page),
+                    hintStyle: TextStyle(color: Colors.grey),
+                    errorText: _validateDesc ? 'Value Can\'t Be Empty' : null,
+                    filled: true,
+
+                    fillColor: Colors.white70,
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                      borderSide: BorderSide(color: Colors.green, width: 2),
+                    ),
+                    border: OutlineInputBorder(),
+                    labelText: 'Description',
                   ),
-                  border: OutlineInputBorder(),
-                  labelText: 'Description',
-                ),
-              ),
+                  onChanged: (value) {
+                    setState(() {
+                      _validateDesc = false;
+                    });
+                  }),
             ),
             Container(
               padding: EdgeInsets.all(10),
@@ -278,6 +296,7 @@ class _State extends State<AddteamPage> {
                         onChanged: (value) {
                           setState(() {
                             _value = value;
+                            _validate = false;
                           });
                         }),
                   ),
@@ -339,7 +358,13 @@ class _State extends State<AddteamPage> {
                     ),
                   ),
                   onPressed: getData,
-                  icon: null,
+                  icon: Icon(
+                    Icons.save,
+                    color: Colors.white,
+                  ),
+                  textColor: Colors.white,
+                  splashColor: Colors.red,
+                  color: Colors.green,
                 )),
           ],
         ),
@@ -348,29 +373,43 @@ class _State extends State<AddteamPage> {
   }
 
   Future getData() async {
-    EasyLoading.show(
-      status: 'loading...',
-    );
-    Team teamObj = Team.imageFile(
-        name: nameController.text,
-        desc: descController.text,
-        type: _value,
-        image: _image);
-    String str = await Teams().addTeam(teamObj);
-    if (str == 'success') {
-      EasyLoading.dismiss();
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => TeamPage()),
-      ).then((value) {
-        setState(() {});
-      });
-    } else {
-      ShowDialogMessage.dialogShow(
-        context,
-        str,
-        "Message",
+    setState(() {
+      nameController.text.isEmpty
+          ? _validateName = true
+          : _validateName = false;
+      descController.text.isEmpty
+          ? _validateDesc = true
+          : _validateDesc = false;
+      _value == 1 ? _validate = true : _validate = false;
+    });
+
+    if (_validate == false &&
+        _validateName == false &&
+        _validateDesc == false) {
+      EasyLoading.show(
+        status: 'loading...',
       );
+      Team teamObj = Team.imageFile(
+          name: nameController.text,
+          desc: descController.text,
+          type: _value,
+          image: _image);
+      String str = await Teams().addTeam(teamObj);
+      if (str == 'success') {
+        EasyLoading.dismiss();
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => TeamPage()),
+        ).then((value) {
+          setState(() {});
+        });
+      } else {
+        ShowDialogMessage.dialogShow(
+          context,
+          str,
+          "Message",
+        );
+      }
     }
   }
 }

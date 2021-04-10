@@ -1,5 +1,6 @@
-import 'package:applicationx/event_screen.dart';
+import 'package:applicationx/beans/event.dart';
 import 'package:applicationx/Eventhome_screen.dart';
+import 'package:applicationx/event_screen.dart';
 import 'package:button_picker/button_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:select_days_week/select_days_week_controller.dart';
 import 'package:select_days_week/select_days_week_widget.dart';
+import 'backend/teams.dart';
+import 'beans/team.dart';
+import 'backend/events.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'show_dialog.dart';
 
 class AddeventPage extends StatefulWidget {
   @override
@@ -197,12 +203,44 @@ class _MyTextFieldDatePicker extends State<MyTextFieldDatePicker> {
 }
 
 class _State extends State<AddeventPage> {
-  int _value = 1;
   DateTime selectedDateTime;
   bool pressed = false;
   bool recVal = false;
+  TextEditingController _eventNameController = TextEditingController();
   TimeOfDay _fromtime = TimeOfDay(hour: 7, minute: 15);
   TimeOfDay _totime = TimeOfDay(hour: 7, minute: 15);
+  TextEditingController _locationNameController = TextEditingController();
+  int _teamSizeValue = 1;
+  double _closeEventBefore = 0;
+
+  bool _validate_eventName = false;
+
+  String _team = "-99";
+
+  Future<List<DropdownMenuItem<String>>> getTeams() async {
+    List<Team> _items = List<Team>();
+    _items = await Teams().getTeams();
+
+    // your list of DropDownMenuItem
+    List<DropdownMenuItem<String>> menuItems = List();
+
+    menuItems.add(DropdownMenuItem<String>(
+      // items[key] this instruction get the value of the respective key
+      child: Text("Select Your Team"), // the value as text label
+      value: "-99", // the respective key as value
+    ));
+
+    // loop in the map and getting all the keys
+    for (Team team in _items) {
+      menuItems.add(DropdownMenuItem<String>(
+        // items[key] this instruction get the value of the respective key
+        child: Text(team.name), // the value as text label
+        value: team.teamCode, // the respective key as value
+      ));
+    }
+    return menuItems;
+  }
+
   Future getImage(ImageSource media) async {
     var img = await ImagePicker.pickImage(source: media);
     setState(() {});
@@ -233,8 +271,15 @@ class _State extends State<AddeventPage> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     var textInput;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('NEW EVENT'),
@@ -255,10 +300,18 @@ class _State extends State<AddeventPage> {
             Container(
               padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
               child: TextField(
+                onChanged: (value) {
+                  setState(() {
+                    _validate_eventName = false;
+                  });
+                },
                 obscureText: false,
-                //controller: nameController,
+                controller: _eventNameController,
+                maxLength: 15,
                 decoration: InputDecoration(
                   hintText: 'Please enter event name',
+                  errorText:
+                      _validate_eventName ? 'Value Can\'t Be Empty' : null,
                   //suffixIcon: Icon(Icons.contact_page),
                   hintStyle: TextStyle(color: Colors.grey),
                   filled: true,
@@ -288,9 +341,9 @@ class _State extends State<AddeventPage> {
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton(
                         dropdownColor: Colors.green[50],
-                        // elevation: 8,
+                        //elevation: 8,
                         isExpanded: true,
-                        value: _value,
+                        value: _teamSizeValue,
                         items: [
                           DropdownMenuItem(
                             child: Text(
@@ -361,7 +414,8 @@ class _State extends State<AddeventPage> {
                         ],
                         onChanged: (value) {
                           setState(() {
-                            _value = value;
+                            _teamSizeValue = value;
+                            print(_teamSizeValue);
                           });
                         }),
                   ),
@@ -378,7 +432,9 @@ class _State extends State<AddeventPage> {
                 firstDate: DateTime.now(),
                 initialDate: DateTime.now().add(Duration(days: 1)),
                 onDateChanged: (selectedDate) {
-                  // Do something with the selected date
+                  setState(() {
+                    selectedDateTime = selectedDate;
+                  });
                 },
               ),
             ),
@@ -414,7 +470,7 @@ class _State extends State<AddeventPage> {
                 ],
               ),
             ),
-            Row(
+            /*   Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 Text(
@@ -435,8 +491,8 @@ class _State extends State<AddeventPage> {
                   },
                 ),
               ],
-            ),
-            Container(
+            ),*/
+            /* Container(
               padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
               child: SelectDaysWeekWidget(
                 SelectDaysWeekController(
@@ -451,12 +507,12 @@ class _State extends State<AddeventPage> {
                   print(day);
                 },
               ),
-            ),
+            ),*/
             Container(
               padding: EdgeInsets.fromLTRB(20, 20, 20, 10),
               child: TextField(
                 obscureText: false,
-                //controller: nameController,
+                controller: _locationNameController,
                 decoration: InputDecoration(
                   hintText: 'Please enter location name',
                   //suffixIcon: Icon(Icons.contact_page),
@@ -486,51 +542,15 @@ class _State extends State<AddeventPage> {
                 child: Padding(
                   padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
                   child: DropdownButtonHideUnderline(
-                    child: DropdownButton(
-                        dropdownColor: Colors.green[50],
-                        // elevation: 8,
-                        isExpanded: true,
-                        value: _value,
-                        items: [
-                          DropdownMenuItem(
-                            child: Text(
-                              'Select Team',
-                              style: TextStyle(
-                                  fontSize: 16, color: Colors.grey[700]),
-                              //  fontWeight: FontWeight.bold),
-                              // textAlign: TextAlign.center,
-                            ),
-                            value: 1,
-                          ),
-                          DropdownMenuItem(
-                            child: Text(
-                              'Team A',
-                              style: TextStyle(
-                                  fontSize: 16, color: Colors.grey[700]),
-                            ),
-                            value: 2,
-                          ),
-                          DropdownMenuItem(
-                            child: Text(
-                              'Team B',
-                              style: TextStyle(
-                                  fontSize: 16, color: Colors.grey[700]),
-                            ),
-                          ),
-                        ],
-                        onChanged: (value) {
-                          setState(() {
-                            _value = value;
-                          });
-                        }),
+                    child: TestWidget(context),
                   ),
                 ),
               ),
             ),
-            Container(
+            /* Container(
               padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-            ),
-            Row(mainAxisAlignment: MainAxisAlignment.start, children: <Widget>[
+            ),*/
+            /*   Row(mainAxisAlignment: MainAxisAlignment.start, children: <Widget>[
               Text(
                 "     Close Event Before:",
                 style: TextStyle(
@@ -543,8 +563,12 @@ class _State extends State<AddeventPage> {
               ButtonPicker(
                 minValue: 0,
                 maxValue: 24,
-                initialValue: 0,
-                onChanged: (val) => print(val),
+                initialValue: _closeEventBefore,
+                onChanged: (val) {
+                  setState(() {
+                    _closeEventBefore = val;
+                  });
+                },
                 step: 1,
                 horizontal: false,
                 loop: true,
@@ -566,7 +590,7 @@ class _State extends State<AddeventPage> {
                 //  fontWeight: FontWeight.bold),
                 // textAlign: TextAlign.center,
               ),
-            ]),
+            ]),*/
           ],
         ),
       ),
@@ -580,12 +604,77 @@ class _State extends State<AddeventPage> {
               fontSize: 16,
             ),
           ),
-          onPressed: () {
-            Navigator.push(
+          onPressed: () => saveEvent()),
+    );
+  }
+
+  Future saveEvent() async {
+    setState(() {
+      _eventNameController.text.isEmpty
+          ? _validate_eventName = true
+          : _validate_eventName = false;
+    });
+
+    if (_validate_eventName == false) {
+      EasyLoading.show(
+        status: 'loading...',
+      );
+
+      Event eventObj = Event();
+      eventObj.name = _eventNameController.text;
+      eventObj.teamSize = _teamSizeValue;
+      eventObj.date = selectedDateTime.toString();
+      eventObj.startTime = _fromtime.toString().substring(10, 15);
+      eventObj.endTime = _totime.toString().substring(10, 15);
+      eventObj.locationName = _locationNameController.text;
+      eventObj.teamCode = _team;
+      eventObj.closeEvent = _closeEventBefore;
+
+      String addedEventOutput = await Events().addEvent(eventObj);
+      if (addedEventOutput == 'success') {
+        EasyLoading.dismiss();
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => EventPage()),
+        ).then((value) {
+          setState(() {});
+        });
+      } else {
+        ShowDialogMessage.dialogShow(
+          context,
+          addedEventOutput,
+          "Message",
+        );
+      }
+    }
+
+    /* Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => EventPage()),
-            );
-          }),
-    );
+            );*/
+  }
+
+  @override
+  Widget TestWidget(BuildContext context) {
+    return FutureBuilder(
+        future: getTeams(),
+        builder: (BuildContext context,
+            AsyncSnapshot<List<DropdownMenuItem<String>>> snapshot) {
+          if (!snapshot.hasData) return Container(); // still loading
+          // alternatively use snapshot.connectionState != ConnectionState.done
+          return DropdownButton(
+            dropdownColor: Colors.green[50],
+            // elevation: 8,
+            isExpanded: true,
+            value: _team,
+            items: snapshot.data,
+            onChanged: (value) {
+              setState(() {
+                print(value);
+                _team = value;
+              });
+            },
+          );
+        });
   }
 }

@@ -5,6 +5,7 @@ import 'backend/teams.dart';
 import 'beans/team.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_share_me/flutter_share_me.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class TeamlistPage extends StatefulWidget {
   @override
@@ -54,7 +55,7 @@ class _TeamlistPageState extends State<TeamlistPage> {
     });
   }
 
-  void myAlert1(String teamCode) {
+  void myAlert1(String teamCode, String teamName) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -74,8 +75,19 @@ class _TeamlistPageState extends State<TeamlistPage> {
               child: Column(
                 children: <Widget>[
                   FlatButton(
-                    onPressed: () {
-                      Navigator.pop(context);
+                    onPressed: () async {
+                      final Uri _emailLaunchUri = Uri(scheme: 'mailto',
+                          //path: ,
+                          queryParameters: {
+                            'subject': 'Example Subject & Symbols are allowed!',
+                            'body': '''Welcome to Sports Arte Application.
+Join  A team: $teamName
+Application link: 
+Team Code: $teamCode
+Thank you for using Sports Arte Application
+Sports Arte Team'''
+                          });
+                      launch(_emailLaunchUri.toString());
                     },
                     padding: EdgeInsets.fromLTRB(40, 10, 50, 10),
                     child: Row(
@@ -106,9 +118,13 @@ class _TeamlistPageState extends State<TeamlistPage> {
                         FlatButton(
                           splashColor: Colors.white,
                           onPressed: () {
-                            print(teamCode);
                             FlutterShareMe().shareToWhatsApp(
-                                msg: "The team Code is $teamCode}");
+                                msg: '''Welcome to Sports Arte Application.
+Join  A team: $teamName
+Application link: 
+Team Code: $teamCode
+Thank you for using Sports Arte Application
+Sports Arte Team''');
                           },
                           child: Image(
                             image: AssetImage("lib/images/WhatsApp.jpeg"),
@@ -137,7 +153,6 @@ class _TeamlistPageState extends State<TeamlistPage> {
 
   @override
   Widget build(BuildContext context) {
-    print(_isLoaded);
     if (_isLoaded == false) {
       EasyLoading.show(
         status: 'loading...',
@@ -215,28 +230,24 @@ class _TeamlistPageState extends State<TeamlistPage> {
                         )),
               );
             }),
-        IconSlideAction(
-          caption: 'Edit',
-          color: Colors.green,
-          icon: Icons.edit,
-          onTap: () => _showSnackBar(context, 'Edit'),
-        ),
       ],
-      secondaryActions: <Widget>[
-        IconSlideAction(
-            caption: 'Assign Players',
-            color: Colors.green,
-            icon: Icons.assignment_ind,
-            onTap: () {
-              myAlert1(item.teamCode);
-            }),
-        IconSlideAction(
-          caption: 'Delete',
-          color: Colors.pink,
-          icon: Icons.delete,
-          onTap: () => _showSnackBar(context, 'Delete'),
-        ),
-      ],
+      secondaryActions: (item.isAdmin == true)
+          ? <Widget>[
+              IconSlideAction(
+                  caption: 'Assign Players',
+                  color: Colors.green,
+                  icon: Icons.assignment_ind,
+                  onTap: () {
+                    myAlert1(item.teamCode, item.name);
+                  }),
+              IconSlideAction(
+                caption: 'Delete',
+                color: Colors.pink,
+                icon: Icons.delete,
+                onTap: () => _showSnackBar(context, 'Delete'),
+              ),
+            ]
+          : [],
     );
   }
 
